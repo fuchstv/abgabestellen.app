@@ -15,6 +15,7 @@ import { maintenanceRoutes } from './routes/maintenance';
 import { inviteRoutes } from './routes/invites';
 import { feedRoutes } from './routes/feeds';
 import { authRoutes } from './routes/auth';
+import { webhookRoutes } from './routes/webhooks';
 
 export function buildApp(db: Database, options: { logger?: boolean } = {}): FastifyInstance {
   const app = fastify({
@@ -74,6 +75,7 @@ export function buildApp(db: Database, options: { logger?: boolean } = {}): Fast
   app.register(maintenanceRoutes, { db });
   app.register(inviteRoutes, { db });
   app.register(feedRoutes, { db });
+  app.register(webhookRoutes, { db });
 
   // Serve Frontend in Production with Cache-Busting on index.html
   const clientDistPath = path.resolve(process.cwd(), 'dist', 'client');
