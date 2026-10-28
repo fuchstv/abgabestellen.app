@@ -10,10 +10,10 @@
 
       <div class="flex flex-wrap items-center justify-center gap-6">
         <router-link to="/privacy" class="hover:text-amber-600 transition-colors">
-          Datenschutzerklärung & e.V.-Übernahmeklausel
+          Datenschutzerklärung
         </router-link>
         <router-link to="/imprint" class="hover:text-amber-600 transition-colors">
-          Impressum (§ 5 DDG)
+          Impressum
         </router-link>
         <a 
           href="https://github.com/fuchstv/abgabestellen.app" 
