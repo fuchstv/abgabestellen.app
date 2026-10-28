@@ -1,0 +1,6 @@
+"Abgabestelle (schwarz:aktualisiert, rot:in Aktualisierung, lila: momentan außer Betrieb)",Anschrift,PLZ,Großbezirk,Ortsteil,AnsprechpartnerIn,Telefon,Wann können Lebensmittel abgegeben werden?,Was wird angenommen?,vorherige telefon. Anmeldung nötig?,Anzahl Abnehmer*innen,Bemerkungen,Webseite,Stand,latitude,longitute
+Berliner Stadtmission Test,Franklinstraße 27a,10587,Charlottenburg-Wilmersdorf,Charlottenburg,,030 / 39 12 722,"Mo-Fr 24/7",Alles,TRUE,73,"ganzjährig",https://example.org,20.2.26,,
+Bahnhofsmission Zoo INAKTIV,Jebensstraße 5,10623,Charlottenburg-Wilmersdorf,Charlottenburg,,030 3138088,,,FALSE,,hier werden aktuell keinerlei LM von foodsharing angenommen,https://example.org,29.6.25,,
+SeelingTreff Test,Seelingstraße 9,14059,Charlottenburg-Wilmersdorf,Charlottenburg,Alexander Test,030 / 30 839 440,"Mo-Sa 9-14:00","Backwaren",FALSE,,nehmen evtl. mehr,https://example.org,29.6.25,,
+Privat Abgabestelle Test,Musterstraße 1,10115,Mitte,Mitte,Erika Mustermann,0171 12345678,"Mo 10-12","Obst",FALSE,,Privater Kontakt,https://example.org,29.6.25,,
+Verteiler Pankow Test,Testallee 5,10405,Pankow,Prenzlauer Berg,Max Mustermann,030 5551234 / 0160 998877,"Di 14-16","Gemüse",TRUE,,Gemischt,https://example.org,29.6.25,,

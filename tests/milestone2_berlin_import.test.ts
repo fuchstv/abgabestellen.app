@@ -42,26 +42,40 @@ describe('Milestone 2 — Berlin CSV Import & Zero PII Leakage', () => {
     }
   });
 
-  it('1. Imports exactly 275 stores from Berlin CSV ignoring trailing empty rows', async () => {
-    const result = await importBerlinCsv(undefined, db, { skipGeocoding: true });
+  const defaultCsvPath = path.resolve(
+    process.cwd(),
+    'data/Abgabestellen Berlin - Neues_ Änderungen_abgabestellen.berlin@foodsharing.network - Abgabestellen.csv'
+  );
+  const fixtureCsvPath = path.resolve(__dirname, 'fixtures/sample_berlin.csv');
+  const hasRealCsv = !process.env.TEST_FORCE_FIXTURE && fs.existsSync(defaultCsvPath);
+  const targetCsvPath = hasRealCsv ? defaultCsvPath : fixtureCsvPath;
 
-    expect(result.importedCount).toBe(275);
-    expect(result.confidentialContactPersonCount).toBeGreaterThan(100);
-    expect(result.confidentialPhoneCount).toBeGreaterThan(150);
+  it('1. Imports stores from Berlin CSV ignoring trailing empty rows', async () => {
+    const result = await importBerlinCsv(targetCsvPath, db, { skipGeocoding: true });
+
+    if (hasRealCsv) {
+      expect(result.importedCount).toBe(275);
+      expect(result.confidentialContactPersonCount).toBeGreaterThan(100);
+      expect(result.confidentialPhoneCount).toBeGreaterThan(150);
+    } else {
+      expect(result.importedCount).toBe(5);
+      expect(result.confidentialContactPersonCount).toBeGreaterThan(0);
+      expect(result.confidentialPhoneCount).toBeGreaterThan(0);
+    }
 
     const count = db.prepare('SELECT COUNT(*) as cnt FROM fs_betrieb').get() as { cnt: number };
-    expect(count.cnt).toBe(275);
+    expect(count.cnt).toBe(hasRealCsv ? 275 : 5);
 
     const givingCount = db.prepare('SELECT COUNT(*) as cnt FROM fs_store_giving_details').get() as { cnt: number };
-    expect(givingCount.cnt).toBe(275);
+    expect(givingCount.cnt).toBe(hasRealCsv ? 275 : 5);
   });
 
   it('2. Zero PII Leakage: Public visitors receive NO private contacts or mobile numbers', async () => {
-    await importBerlinCsv(undefined, db, { skipGeocoding: true });
+    await importBerlinCsv(targetCsvPath, db, { skipGeocoding: true });
 
     const allDistrictIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
     const stores = storeModel.getStoresByRegion(allDistrictIds);
-    expect(stores.length).toBe(275);
+    expect(stores.length).toBe(hasRealCsv ? 275 : 5);
 
     for (const store of stores) {
       const perms = permissionService.getStorePermissions(undefined, store);
@@ -81,7 +95,7 @@ describe('Milestone 2 — Berlin CSV Import & Zero PII Leakage', () => {
   });
 
   it('3. Internal CRM: Managers with WORKGROUP_GIVING_STORES can view internal contacts & logs', async () => {
-    await importBerlinCsv(undefined, db, { skipGeocoding: true });
+    await importBerlinCsv(targetCsvPath, db, { skipGeocoding: true });
 
     const managerUser = { uid: 'manager-alice', email: 'alice@abgabestellen.app', isSuperAdmin: false };
     userRoleModel.assignRole('manager-alice', 1, UserRoleType.WORKGROUP_GIVING_STORES);
