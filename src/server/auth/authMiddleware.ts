@@ -1,5 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { AuthUser } from '@shared/types';
+import { verifyToken } from './jwt';
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -7,7 +8,7 @@ declare module 'fastify' {
   }
 }
 
-// Lightweight Token Parser (Supports test bearer tokens, dev tokens, and Firebase ID tokens)
+// Lightweight Token Parser (Supports test bearer tokens, dev tokens, and signed JWTs)
 export function parseAuthHeader(authHeader?: string): AuthUser | null {
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return null;
@@ -26,7 +27,13 @@ export function parseAuthHeader(authHeader?: string): AuthUser | null {
     };
   }
 
-  // 2. Base64 mock / JWT payload (for rapid testing without network calls)
+  // 2. Signed HMAC JWT verification
+  const verifiedUser = verifyToken(token);
+  if (verifiedUser) {
+    return verifiedUser;
+  }
+
+  // 3. Fallback: Base64 JSON payload (for rapid testing without secret)
   try {
     const parts = token.split('.');
     if (parts.length === 3) {

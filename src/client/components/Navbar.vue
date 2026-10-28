@@ -45,8 +45,9 @@
           + Vorschlag
         </button>
 
-        <!-- Manager Maintenance / Inbox -->
+        <!-- Manager Maintenance / Inbox (Only visible for logged-in coordinators / ORGA) -->
         <router-link 
+          v-if="authState.user"
           to="/maintenance" 
           class="relative text-xs font-semibold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors"
         >
@@ -59,43 +60,65 @@
           </span>
         </router-link>
 
-        <!-- Auth switcher (Simulation for test/dev) -->
-        <div class="relative text-xs">
+        <!-- Auth: Login button if logged out -->
+        <button
+          v-if="!authState.user"
+          @click="isLoginModalOpen = true"
+          type="button"
+          class="text-xs font-semibold text-slate-700 hover:text-amber-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+        >
+          <span>🔐 Anmelden</span>
+        </button>
+
+        <!-- Auth: User Profile & Logout Dropdown if logged in -->
+        <div v-else class="relative text-xs">
           <button 
             @click="toggleUserMenu" 
             type="button" 
-            class="w-8 h-8 rounded-full bg-slate-200 text-slate-700 font-bold flex items-center justify-center hover:bg-slate-300"
-            title="Benutzer wechseln"
+            class="h-8 px-2.5 rounded-full bg-amber-50 border border-amber-200 text-amber-900 font-bold flex items-center gap-1.5 hover:bg-amber-100 transition-colors cursor-pointer"
+            title="Benutzermenü öffnen"
           >
-            {{ authState.user ? authState.user.email[0].toUpperCase() : '👤' }}
+            <span class="w-5 h-5 rounded-full bg-amber-600 text-white flex items-center justify-center text-[10px] font-extrabold">
+              {{ authState.user.email[0].toUpperCase() }}
+            </span>
+            <span class="hidden sm:inline font-medium text-slate-700">{{ authState.user.name || authState.user.email.split('@')[0] }}</span>
           </button>
 
-          <div v-if="showUserMenu" class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-slate-200 p-2 z-50 text-xs space-y-1">
-            <div class="font-bold text-slate-700 px-2 py-1 border-b border-slate-100">
-              Rolle wechseln (Test / Dev)
+          <div v-if="showUserMenu" class="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-slate-200 p-2 z-50 text-xs space-y-2 animate-in fade-in zoom-in-95 duration-100">
+            <div class="px-2 py-1.5 border-b border-slate-100">
+              <div class="font-bold text-slate-900 truncate">{{ authState.user.name || 'Koordinator:in' }}</div>
+              <div class="text-[11px] text-slate-500 truncate">{{ authState.user.email }}</div>
+              <span v-if="authState.user.isSuperAdmin" class="inline-block mt-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">
+                ORGA / Admin
+              </span>
             </div>
-            <button 
-              @click="switchRole('public')" 
-              class="w-full text-left px-2 py-1.5 hover:bg-slate-50 rounded"
+
+            <router-link 
+              to="/maintenance" 
+              @click="showUserMenu = false"
+              class="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-slate-50 rounded text-slate-700 font-medium"
             >
-              Public Visitor (Nicht angemeldet)
-            </button>
+              📥 Wartungs-Inbox
+            </router-link>
+
             <button 
-              @click="switchRole('foodsaver')" 
-              class="w-full text-left px-2 py-1.5 hover:bg-slate-50 rounded"
+              @click="logout" 
+              type="button"
+              class="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-rose-50 text-rose-600 font-bold rounded cursor-pointer transition-colors"
             >
-              Foodsaver+ (standard)
-            </button>
-            <button 
-              @click="switchRole('manager')" 
-              class="w-full text-left px-2 py-1.5 hover:bg-slate-50 rounded text-amber-700 font-semibold"
-            >
-              AG Abgabestellen (Manager Berlin)
+              🚪 Abmelden
             </button>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Login Modal -->
+    <LoginModal 
+      :is-open="isLoginModalOpen" 
+      @close="isLoginModalOpen = false" 
+      @loggedIn="isLoginModalOpen = false"
+    />
   </header>
 </template>
 
@@ -103,6 +126,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { appState, authState, setAuthUser } from '../state';
+import LoginModal from './LoginModal.vue';
 
 const router = useRouter();
 defineEmits<{
@@ -110,6 +134,7 @@ defineEmits<{
 }>();
 
 const showUserMenu = ref(false);
+const isLoginModalOpen = ref(false);
 
 function toggleUserMenu() {
   showUserMenu.value = !showUserMenu.value;
@@ -125,21 +150,9 @@ function onRegionChange(e: Event) {
   }
 }
 
-function switchRole(role: 'public' | 'foodsaver' | 'manager') {
+function logout() {
   showUserMenu.value = false;
-  if (role === 'public') {
-    setAuthUser(null, null);
-  } else if (role === 'foodsaver') {
-    setAuthUser(
-      { uid: 'fs_user_1', email: 'foodsaver@example.org' },
-      'test:fs_user_1:foodsaver@example.org:false'
-    );
-  } else if (role === 'manager') {
-    setAuthUser(
-      { uid: 'berlin_lead', email: 'lead@foodsharing.berlin' },
-      'test:berlin_lead:lead@foodsharing.berlin:false'
-    );
-  }
+  setAuthUser(null, null);
   window.location.reload();
 }
 </script>

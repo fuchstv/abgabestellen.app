@@ -14,6 +14,7 @@ import { suggestionRoutes } from './routes/suggestions';
 import { maintenanceRoutes } from './routes/maintenance';
 import { inviteRoutes } from './routes/invites';
 import { feedRoutes } from './routes/feeds';
+import { authRoutes } from './routes/auth';
 
 export function buildApp(db: Database, options: { logger?: boolean } = {}): FastifyInstance {
   const app = fastify({
@@ -65,6 +66,7 @@ export function buildApp(db: Database, options: { logger?: boolean } = {}): Fast
   });
 
   // Register API Routes
+  app.register(authRoutes, { db });
   app.register(regionRoutes, { db });
   app.register(givingStoreRoutes, { db });
   app.register(contactLogRoutes, { db });
@@ -73,17 +75,29 @@ export function buildApp(db: Database, options: { logger?: boolean } = {}): Fast
   app.register(inviteRoutes, { db });
   app.register(feedRoutes, { db });
 
-  // Serve Frontend in Production
+  // Serve Frontend in Production with Cache-Busting on index.html
   const clientDistPath = path.resolve(process.cwd(), 'dist', 'client');
   if (fs.existsSync(clientDistPath)) {
     app.register(fastifyStatic, {
       root: clientDistPath,
-      prefix: '/'
+      prefix: '/',
+      setHeaders: (res, filePath) => {
+        if (filePath.endsWith('index.html')) {
+          res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+          res.setHeader('Pragma', 'no-cache');
+          res.setHeader('Expires', '0');
+        } else {
+          res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        }
+      }
     });
 
-    // SPA fallback to index.html for non-API routes
+    // SPA fallback to index.html for non-API routes (Always fresh, no browser caching)
     app.setNotFoundHandler((request, reply) => {
       if (!request.raw.url?.startsWith('/api/')) {
+        reply.header('Cache-Control', 'no-cache, no-store, must-revalidate');
+        reply.header('Pragma', 'no-cache');
+        reply.header('Expires', '0');
         return reply.sendFile('index.html');
       }
       return reply.status(404).send({ error: 'Endpoint nicht gefunden' });
