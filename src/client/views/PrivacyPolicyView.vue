@@ -27,12 +27,29 @@
     <div class="space-y-4 text-xs leading-relaxed text-slate-700">
       <h2 class="text-base font-bold text-slate-900 pt-2">1. Verantwortliche Stelle</h2>
       <p>
-        Verantwortlich für die Datenverarbeitung auf dieser Plattform ist die Entwicklungsgruppe von 
-        <code>abgabestellen.app</code>. Kontakt über GitHub: 
-        <a href="https://github.com/fuchstv/abgabestellen.app" class="text-amber-600 underline">github.com/fuchstv/abgabestellen.app</a>.
+        <strong>Philipp Fuchs</strong><br>
+        Chopinstr. 6<br>
+        13088 Berlin<br>
+        E-Mail: <a href="mailto:datenschutz@abgabestellen.app" class="text-amber-600 underline">datenschutz@abgabestellen.app</a>
       </p>
 
-      <h2 class="text-base font-bold text-slate-900 pt-2">2. Zero-PII Architektur & Rollenvergabe</h2>
+      <h2 class="text-base font-bold text-slate-900 pt-2">2. Technische Infrastruktur & Auftragsverarbeitung</h2>
+      <p>
+        Zur Bereitstellung dieses Webangebots setzen wir auf datensparsame, moderne Cloud-Infrastrukturen mit Rechenzentren innerhalb der Europäischen Union:
+      </p>
+      <ul class="list-disc pl-5 space-y-1">
+        <li>
+          <strong>Hosting & Datenbank (Google Cloud Run):</strong> Bereitstellung des Webservers und der Datenbank erfolgt über Google Cloud Platform in der Region Frankfurt am Main (<code>europe-west3</code>). Es werden standardmäßig flüchtige Server-Logs (IP-Adresse, Zeitstempel, aufgerufene URL) verarbeitet, um den sicheren Betrieb zu gewährleisten (Art. 6 Abs. 1 lit. f DSGVO).
+        </li>
+        <li>
+          <strong>Kartenanzeige & Adresssuche (Google Maps Platform):</strong> Für interaktive Karten und Adressvervollständigung wird die Google Maps JavaScript API eingebunden. Beim Aufruf der Kartenansicht baut Ihr Browser eine direkte Verbindung zu den Servern von Google auf. Rechtsgrundlage ist unser berechtigtes Interesse an einer nutzerfreundlichen Navigation zu Abgabestellen (Art. 6 Abs. 1 lit. f DSGVO).
+        </li>
+        <li>
+          <strong>E-Mail-Zustellung (AWS Lightsail EU / Stalwart Mail Server):</strong> Systembenachrichtigungen und regionale Update-Abonnements werden über einen von uns selbst administrierten Stalwart Mail Server auf einer virtuellen Instanz bei Amazon Web Services (AWS Lightsail, Standort Frankfurt am Main / EU) versendet. Die Weitergabe Ihrer E-Mail-Adresse an unberechtigte Dritte ist ausgeschlossen.
+        </li>
+      </ul>
+
+      <h2 class="text-base font-bold text-slate-900 pt-2">3. Zero-PII Architektur & Rollenvergabe</h2>
       <p>
         Die Plattform speichert bewusst keine Passwörter oder privaten Adressdaten von Endnutzer:innen. 
         Die Authentifizierung erfolgt tokenbasiert (z.&nbsp;B. via Identity Platform / Firebase Auth oder Einladungslinks). 
@@ -40,17 +57,18 @@
         zugewiesen.
       </p>
 
-      <h2 class="text-base font-bold text-slate-900 pt-2">3. Trennung von öffentlichen und internen Daten</h2>
+      <h2 class="text-base font-bold text-slate-900 pt-2">4. Trennung von öffentlichen und internen Daten</h2>
       <p>
         Öffentlich zugänglich sind ausschließlich allgemeine Informationen zu Abgabestellen (Annahmezeiten, angenommene Waren, 
         öffentliche Telefonnummern). Interne Ansprechpersonen und vertrauliche Gesprächsprotokolle werden strikt serverseitig 
         abgesichert und sind ausschließlich für autorisierte Regionalkoordinator:innen einsehbar.
       </p>
 
-      <h2 class="text-base font-bold text-slate-900 pt-2">4. Deine Rechte</h2>
+      <h2 class="text-base font-bold text-slate-900 pt-2">5. Deine Rechte</h2>
       <p>
         Du hast das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16 DSGVO), Löschung (Art. 17 DSGVO) und 
-        Widerruf einer erteilten Einwilligung bezüglich der von dir eingereichten Daten.
+        Widerruf einer erteilten Einwilligung bezüglich der von dir eingereichten Daten. Wende dich hierzu an 
+        <a href="mailto:datenschutz@abgabestellen.app" class="text-amber-600 underline">datenschutz@abgabestellen.app</a>.
       </p>
     </div>
   </div>

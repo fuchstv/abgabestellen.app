@@ -23,9 +23,12 @@
     <div class="space-y-4 text-xs leading-relaxed text-slate-700">
       <h2 class="text-base font-bold text-slate-900 pt-2">Diensteanbieter</h2>
       <p>
-        Entwicklerinitiative abgabestellen.app<br>
-        Open-Source Projekt auf GitHub: <a href="https://github.com/fuchstv/abgabestellen.app" class="text-amber-600 underline">github.com/fuchstv/abgabestellen.app</a><br>
-        E-Mail: <a href="mailto:kontakt@abgabestellen.app" class="text-amber-600 underline">kontakt@abgabestellen.app</a>
+        <strong>Philipp Fuchs</strong><br>
+        Chopinstr. 6<br>
+        13088 Berlin<br>
+        Deutschland<br><br>
+        E-Mail: <a href="mailto:info@abgabestellen.app" class="text-amber-600 underline">info@abgabestellen.app</a><br>
+        Open-Source Repository: <a href="https://github.com/fuchstv/abgabestellen.app" target="_blank" rel="noopener noreferrer" class="text-amber-600 underline">github.com/fuchstv/abgabestellen.app</a>
       </p>
 
       <h2 class="text-base font-bold text-slate-900 pt-2">Haftung für Inhalte</h2>

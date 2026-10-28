@@ -1,0 +1,1070 @@
+{
+  "franklinstraße 27a, 10587 berlin": {
+    "lat": 52.5189597,
+    "lon": 13.3253857
+  },
+  "jebensstraße 5, 10623 berlin": {
+    "lat": 52.5072504,
+    "lon": 13.3313321
+  },
+  "seelingstraße 9, 14059 berlin": {
+    "lat": 52.5154432,
+    "lon": 13.294879
+  },
+  "heckerdamm 226, 13627 berlin": {
+    "lat": 52.5396509,
+    "lon": 13.2998364
+  },
+  "heckerdamm 271, 13627 berlin": {
+    "lat": 52.54061069999999,
+    "lon": 13.2820768
+  },
+  "joachim-friedrich-straße 46, 10711 berlin": {
+    "lat": 52.497132,
+    "lon": 13.2958911
+  },
+  "nassauische straße 66, 10717 berlin": {
+    "lat": 52.49386930000001,
+    "lon": 13.3267654
+  },
+  "forckenbeckstraße 17, 14199 berlin": {
+    "lat": 52.4808715,
+    "lon": 13.301154
+  },
+  "bergheimer platz 1, 14197 berlin": {
+    "lat": 52.469809,
+    "lon": 13.3194975
+  },
+  "tübinger straße 5, 10715 berlin": {
+    "lat": 52.4800595,
+    "lon": 13.329573
+  },
+  "hanauer straße 63, 14197 berlin": {
+    "lat": 52.4782265,
+    "lon": 13.3137264
+  },
+  "straße am schoelerpark 37, 10715 berlin": {
+    "lat": 52.4839448,
+    "lon": 13.324116
+  },
+  "mierendorffplatz 19, 10589 berlin": {
+    "lat": 52.5260815,
+    "lon": 13.3057701
+  },
+  "schweinfurthstraße  4, 14195 berlin": {
+    "lat": 52.4706687,
+    "lon": 13.2917556
+  },
+  "kadinerstraße 9, 10243 berlin": {
+    "lat": 52.5140225,
+    "lon": 13.4497401
+  },
+  "kreutzigerstraße 19, 10247 berlin": {
+    "lat": 52.5131534,
+    "lon": 13.4600408
+  },
+  "am containerbahnhof 1, 10367 berlin": {
+    "lat": 52.5158351,
+    "lon": 13.4758004
+  },
+  "erich-steinfurth-str. 8, 10243 berlin": {
+    "lat": 52.5112378,
+    "lon": 13.4353262
+  },
+  "frankfurter allee 5, 10243 berlin": {
+    "lat": 52.51626419999999,
+    "lon": 13.4559061
+  },
+  "friedenstraße 32, 10243 berlin": {
+    "lat": 52.5223266,
+    "lon": 13.4341869
+  },
+  "fürstenwalder straße 30, 10243 berlin": {
+    "lat": 52.5188682,
+    "lon": 13.4311463
+  },
+  "kopernikusstraße 36, 10243 berlin": {
+    "lat": 52.5113456,
+    "lon": 13.4492787
+  },
+  "grünberger straße 73, 10245 berlin": {
+    "lat": 52.5116208,
+    "lon": 13.4596221
+  },
+  "hausburgstraße 9, 10249 berlin": {
+    "lat": 52.5260439,
+    "lon": 13.4526831
+  },
+  "jessnerstraße 41, 10247 berlin": {
+    "lat": 52.5106318,
+    "lon": 13.4715541
+  },
+  "kadiner straße 9, 10243 berlin": {
+    "lat": 52.5140225,
+    "lon": 13.4497401
+  },
+  "knorrpromenade 2, 10245 berlin": {
+    "lat": 52.5088448,
+    "lon": 13.4628707
+  },
+  "modersohnstraße 46, 10245 berlin": {
+    "lat": 52.503708,
+    "lon": 13.4566254
+  },
+  "mühsamstraße 74, 10249 berlin": {
+    "lat": 52.5210613,
+    "lon": 13.4544712
+  },
+  "petersburger straße 92, 10247 berlin": {
+    "lat": 52.517465,
+    "lon": 13.4523601
+  },
+  "rigaer straße 83, 10247 berlin": {
+    "lat": 52.5170719,
+    "lon": 13.4622279
+  },
+  "rüdersdorfer straße 64, 10243 berlin": {
+    "lat": 52.5111882,
+    "lon": 13.446308
+  },
+  "samariterstr. 27, 10247 berlin": {
+    "lat": 52.5187194,
+    "lon": 13.4658226
+  },
+  "samariterstraße 32, 10247 berlin": {
+    "lat": 52.5168056,
+    "lon": 13.464994
+  },
+  "schreinerstraße 18, 10247 berlin": {
+    "lat": 52.51682959999999,
+    "lon": 13.4670315
+  },
+  "storkower straße 101a, 10407 berlin": {
+    "lat": 52.5373186,
+    "lon": 13.4522303
+  },
+  "stralauer platz 32, 10243 berlin": {
+    "lat": 52.5093099,
+    "lon": 13.4315508
+  },
+  "straßmannstraße 17, 10249 berlin": {
+    "lat": 52.5222407,
+    "lon": 13.4492292
+  },
+  "rigaer straße 71 a, 10247 berlin": {
+    "lat": 52.5161324,
+    "lon": 13.4670518
+  },
+  "weidenweg 62, 10247 berlin": {
+    "lat": 52.5188566,
+    "lon": 13.4555938
+  },
+  "weserstraße 36, 10247 berlin": {
+    "lat": 52.5091518,
+    "lon": 13.4682353
+  },
+  "rudolfstraße 14a, 10245 berlin": {
+    "lat": 52.50372540000001,
+    "lon": 13.4560931
+  },
+  "matternstraße 17, 10249 berlin": {
+    "lat": 52.52195,
+    "lon": 13.45213
+  },
+  "scharnweberstraße 29, 10247 berlin": {
+    "lat": 52.5132309,
+    "lon": 13.4634708
+  },
+  "pauline-staegemann-str. 6, 10249 berlin": {
+    "lat": 52.5253564,
+    "lon": 13.4216483
+  },
+  "friedrichstraße 1, 10969 berlin": {
+    "lat": 52.5001542,
+    "lon": 13.3917725
+  },
+  "friedrichstraße 18/ 19, 10969 berlin": {
+    "lat": 52.5029473,
+    "lon": 13.3916195
+  },
+  "fürbringerstraße 35, 10961 berlin": {
+    "lat": 52.4935609,
+    "lon": 13.3937651
+  },
+  "gitschiner straße 15, 10969 berlin": {
+    "lat": 52.4981634,
+    "lon": 13.4006017
+  },
+  "gneisenaustraße 12, 10961 berlin": {
+    "lat": 52.4918571,
+    "lon": 13.3915816
+  },
+  "kottbusser tor, 10999 berlin": {
+    "lat": 52.498801,
+    "lon": 13.4181753
+  },
+  "lausitzer platz 8, 10997 berlin": {
+    "lat": 52.5000345,
+    "lon": 13.4320294
+  },
+  "fcxm+g6 berlin, 10997 berlin": {
+    "lat": 52.4988125,
+    "lon": 13.4330625
+  },
+  "görlitzer straße  1-3, 10997 berlin": {
+    "lat": 52.58475749999999,
+    "lon": 13.5235278
+  },
+  "lausitzer straße 8, 10999 berlin": {
+    "lat": 52.4977189,
+    "lon": 13.4286249
+  },
+  "ohlauer straße 22, 10999 berlin": {
+    "lat": 52.49649300000001,
+    "lon": 13.4299994
+  },
+  "segitzdamm 46, 10969 berlin": {
+    "lat": 52.4980695,
+    "lon": 13.4120044
+  },
+  "skalitzer straße 133, 10999 berlin": {
+    "lat": 52.4994927,
+    "lon": 13.4196774
+  },
+  "taborstraße 17, 10997 berlin": {
+    "lat": 52.49677029999999,
+    "lon": 13.4461739
+  },
+  "waldemarstraße 57, 10997 berlin": {
+    "lat": 52.5032609,
+    "lon": 13.4223698
+  },
+  "wassertorstraße 48, 10969 berlin": {
+    "lat": 52.5004388,
+    "lon": 13.4055988
+  },
+  "wiener str. 59b, 10999 berlin": {
+    "lat": 52.4957106,
+    "lon": 13.4378974
+  },
+  "wrangelstraße 12, 10997 berlin": {
+    "lat": 52.50379210000001,
+    "lon": 13.4288648
+  },
+  "wrangelstraße 30, 10997 berlin": {
+    "lat": 52.5017789,
+    "lon": 13.433786
+  },
+  "wrangelstraße 51, 10997 berlin": {
+    "lat": 52.49866,
+    "lon": 13.44139
+  },
+  "zeughofstraße 12-15, 10997 berlin": {
+    "lat": 52.5013437,
+    "lon": 13.432505
+  },
+  "zossener straße 65, 10961 berlin": {
+    "lat": 52.4964009,
+    "lon": 13.3960315
+  },
+  "wilhelmstraße 115, 10961 berlin": {
+    "lat": 52.50423259999999,
+    "lon": 13.3853298
+  },
+  "siehe bemerkungen, 10551 berlin": {
+    "lat": 52.531671,
+    "lon": 13.3385525
+  },
+  "paul-gesche-straße 9, 10316 berlin": {
+    "lat": 52.5092191,
+    "lon": 13.5085267
+  },
+  "rummelsburger straße 61, 10315 berlin": {
+    "lat": 52.501698,
+    "lon": 13.5026454
+  },
+  "hagenstraße 57, 10365 berlin": {
+    "lat": 52.5122686,
+    "lon": 13.4990386
+  },
+  "frankfurter allee 199, 10365 berlin": {
+    "lat": 52.5124612,
+    "lon": 13.4900053
+  },
+  "wustrower straße 18, 13051 berlin": {
+    "lat": 52.56602880000001,
+    "lon": 13.5077098
+  },
+  "degnerstraße 82, 13053 berlin": {
+    "lat": 52.5525637,
+    "lon": 13.4996693
+  },
+  "münsterlandstraße 5, 10317 berlin": {
+    "lat": 52.49854389999999,
+    "lon": 13.484745
+  },
+  "weitlingstraße 11, 10317 berlin": {
+    "lat": 52.5100164,
+    "lon": 13.4985851
+  },
+  "frankfurter allee 286, 10317 berlin": {
+    "lat": 52.510506,
+    "lon": 13.5041891
+  },
+  "eichner chaussee 3, 16356 berlin": {
+    "lat": 52.5510917,
+    "lon": 13.5897243
+  },
+  "hellersdorfer promenade 14, 12627 berlin": {
+    "lat": 52.5408196,
+    "lon": 13.6069829
+  },
+  "tangermünder straße 7, 12627 berlin": {
+    "lat": 52.544605,
+    "lon": 13.6057712
+  },
+  "alte hellersdorfer straße 77, 12629 berlin": {
+    "lat": 52.54041059999999,
+    "lon": 13.5915092
+  },
+  "ludwigsfelder straße 2a, 12629 berlin": {
+    "lat": 52.5459565,
+    "lon": 13.5894186
+  },
+  "louis-lewin-straße 40 b, 12627 berlin": {
+    "lat": 52.5324712,
+    "lon": 13.6230714
+  },
+  "otto-rosenberg-straße 4-10, 12681 berlin": {
+    "lat": 52.5520311,
+    "lon": 13.5443156
+  },
+  "marzahner promenade 9, 12679 berlin": {
+    "lat": 52.5428434,
+    "lon": 13.5442818
+  },
+  "otto-rosenberg-straße 4, 12681 berlin": {
+    "lat": 52.5514014,
+    "lon": 13.5462183
+  },
+  "havemannstraße 17a, 12689 berlin": {
+    "lat": 52.56831529999999,
+    "lon": 13.5732714
+  },
+  "wittenbergerstraße 85, 12689 berlin": {
+    "lat": 52.5664686,
+    "lon": 13.5713959
+  },
+  "hultschiner damm 140, 12623 berlin": {
+    "lat": 52.48719970000001,
+    "lon": 13.6055082
+  },
+  "pestalozzistraße 31, 12623 berlin": {
+    "lat": 52.5096273,
+    "lon": 13.6157063
+  },
+  "pilgramer straße 121, 12623 berlin": {
+    "lat": 52.4846981,
+    "lon": 13.6083825
+  },
+  "weißenhöher straße 108, 12683 berlin": {
+    "lat": 52.5051232,
+    "lon": 13.5585387
+  },
+  "bornemannstraße 12, 13357 berlin": {
+    "lat": 52.5501746,
+    "lon": 13.3710882
+  },
+  "residenzstraße 90, 13409 berlin": {
+    "lat": 52.5599603,
+    "lon": 13.3707741
+  },
+  "g89r+pmq berlin, 10557 berlin": {
+    "lat": 52.5193375,
+    "lon": 13.3417344
+  },
+  "gcc6+g3v berlin, 10178 berlin": {
+    "lat": 52.5213625,
+    "lon": 13.4101719
+  },
+  "gcc5+xv5 berlin, 10178 berlin": {
+    "lat": 52.5223875,
+    "lon": 13.4097344
+  },
+  "große hamburger straße 18, 10115 berlin": {
+    "lat": 52.5246191,
+    "lon": 13.3990076
+  },
+  "brunnenstraße 145, 10015 berlin": {
+    "lat": 52.5371812,
+    "lon": 13.3964012
+  },
+  "tieckstraße 17, 10115 berlin": {
+    "lat": 52.52984259999999,
+    "lon": 13.3905951
+  },
+  "torstraße 190, 10115 berlin": {
+    "lat": 52.5282516,
+    "lon": 13.3927634
+  },
+  "otto-braun-straße 70-72, 10178 berlin": {
+    "lat": 52.5228466,
+    "lon": 13.418439
+  },
+  "lützowstraße 28, 10785 berlin": {
+    "lat": 52.50414110000001,
+    "lon": 13.3633327
+  },
+  "beusselstraße 26, 10553 berlin": {
+    "lat": 52.52956,
+    "lon": 13.32887
+  },
+  "lehrter straße 68, 10557 berlin": {
+    "lat": 52.5265368,
+    "lon": 13.3626206
+  },
+  "lübecker straße 6, 10559 berlin": {
+    "lat": 52.5276023,
+    "lon": 13.3456873
+  },
+  "oldenburger straße 23, 10551 berlin": {
+    "lat": 52.5320646,
+    "lon": 13.3367819
+  },
+  "bremer straße 10, 10551 berlin": {
+    "lat": 52.5291283,
+    "lon": 13.338755
+  },
+  "rathenower straße 16, 10559 berlin": {
+    "lat": 52.5285666,
+    "lon": 13.354559
+  },
+  "thusnelda allee 1, 10551 berlin": {
+    "lat": 52.5260499,
+    "lon": 13.3398404
+  },
+  "kurfürstenstraße 40, 10785 berlin": {
+    "lat": 52.5006769,
+    "lon": 13.3602439
+  },
+  "ackerstraße 85–86, 13355 berlin": {
+    "lat": 52.53973180000001,
+    "lon": 13.3821173
+  },
+  "luxemburger straße 25, 13353 berlin": {
+    "lat": 52.5442635,
+    "lon": 13.3562467
+  },
+  "lynarstraße 38, 13353 berlin": {
+    "lat": 52.5408079,
+    "lon": 13.3616612
+  },
+  "samoastraße 14, 13353 berlin": {
+    "lat": 52.5413965,
+    "lon": 13.3548577
+  },
+  "seestraße 35, 13353 berlin": {
+    "lat": 52.5487891,
+    "lon": 13.3495621
+  },
+  "luxemburger straße 8, 13353 berlin": {
+    "lat": 52.54478899999999,
+    "lon": 13.3553753
+  },
+  "leopoldplatz, 13347 berlin": {
+    "lat": 52.5484694,
+    "lon": 13.3613713
+  },
+  "reinickendorfer straße 55, 13347 berlin": {
+    "lat": 52.5524276,
+    "lon": 13.3672052
+  },
+  "liebenwalder straße 2-3 (korrekt: schulstraße?), 13347 berlin": {
+    "lat": 52.5523134,
+    "lon": 13.3659699
+  },
+  "g9w4+mr9 berlin, 13347 berlin": {
+    "lat": 52.5466625,
+    "lon": 13.3571094
+  },
+  "oudenarder straße 26, 13347 berlin": {
+    "lat": 52.5531439,
+    "lon": 13.3636675
+  },
+  "schererstraße 8, 13347 berlin": {
+    "lat": 52.5481837,
+    "lon": 13.3669265
+  },
+  "seestraße 48, 13347 berlin": {
+    "lat": 52.55060280000001,
+    "lon": 13.3532587
+  },
+  "seestrasse 49, 13347 berlin": {
+    "lat": 52.5507795,
+    "lon": 13.3536296
+  },
+  "utrechter str. 44, 13347 berlin": {
+    "lat": 52.550608,
+    "lon": 13.361308
+  },
+  "müllerstraße 126, 13349 berlin": {
+    "lat": 52.552756,
+    "lon": 13.3469643
+  },
+  "müllerstraße 56 - 58, 13349 berlin": {
+    "lat": 52.5554622,
+    "lon": 13.3479097
+  },
+  "müllerstraße 120, 13349 berlin": {
+    "lat": 52.554292,
+    "lon": 13.3446898
+  },
+  "feldstraße 10, 13355 berlin": {
+    "lat": 52.5381051,
+    "lon": 13.3854896
+  },
+  "demminer straße 28, 13355 berlin": {
+    "lat": 52.5419078,
+    "lon": 13.3960338
+  },
+  "buttmannstraße 1a, 13357 berlin": {
+    "lat": 52.55259969999999,
+    "lon": 13.3788939
+  },
+  "gotenburger straße 7-8, 13359 berlin": {
+    "lat": 52.5573263,
+    "lon": 13.3836454
+  },
+  "osloer straße 80, 13359 berlin": {
+    "lat": 52.5564055,
+    "lon": 13.370104
+  },
+  "tempelhofer weg 86, 12347 berlin": {
+    "lat": 52.4518074,
+    "lon": 13.4330811
+  },
+  "braunschweiger straße 80, 12055 berlin": {
+    "lat": 52.47070069999999,
+    "lon": 13.442544
+  },
+  "fuldastraße 9, 12043 berlin": {
+    "lat": 52.4833267,
+    "lon": 13.4355906
+  },
+  "hasenheide 82, 10967 berlin": {
+    "lat": 52.4865703,
+    "lon": 13.4154548
+  },
+  "karl-marx-straße 197, 12055 berlin": {
+    "lat": 52.472728,
+    "lon": 13.4414104
+  },
+  "lahnstraße 56, 12055 berlin": {
+    "lat": 52.4682796,
+    "lon": 13.4463371
+  },
+  "liberdastraße 14, 12047 berlin": {
+    "lat": 52.4919119,
+    "lon": 13.4290556
+  },
+  "pflügerstraße 52, 12047 berlin": {
+    "lat": 52.49013,
+    "lon": 13.43421
+  },
+  "rütlistraße 1-3, 12045 berlin": {
+    "lat": 52.4869791,
+    "lon": 13.4341917
+  },
+  "weserstraße 24, 12047 berlin": {
+    "lat": 52.4866398,
+    "lon": 13.433382
+  },
+  "saalestraße 17/ 18, 12055 berlin": {
+    "lat": 52.4706222,
+    "lon": 13.447164
+  },
+  "steinbockstraße 25, 12057 berlin": {
+    "lat": 52.47108979999999,
+    "lon": 13.4683414
+  },
+  "teupitzer straße 35, 12059 berlin": {
+    "lat": 52.47998219999999,
+    "lon": 13.456308
+  },
+  "teupitzer straße 39, 12059 berlin": {
+    "lat": 52.480442,
+    "lon": 13.4566811
+  },
+  "thomasstraße 55, 12053 berlin": {
+    "lat": 52.4722888,
+    "lon": 13.433242
+  },
+  "weisestraße 34, 12049 berlin": {
+    "lat": 52.47391289999999,
+    "lon": 13.4252257
+  },
+  "wildenbruchstraße 25, 12045 berlin": {
+    "lat": 52.48680830000001,
+    "lon": 13.4475282
+  },
+  "windenweg 37, 12357 berlin": {
+    "lat": 52.4297917,
+    "lon": 13.4822148
+  },
+  "am sudhaus 4, 12053 berlin": {
+    "lat": 52.47941849999999,
+    "lon": 13.4317553
+  },
+  "weserstraße 213, 12047 berlin": {
+    "lat": 52.4883865,
+    "lon": 13.4265123
+  },
+  "lenaustraße 4, 12057 berlin": {
+    "lat": 52.4899125,
+    "lon": 13.4250977
+  },
+  "sonnenallee 319, 12057 berlin": {
+    "lat": 52.46548,
+    "lon": 13.4726584
+  },
+  "schierker straße 53a, 12051 berlin": {
+    "lat": 52.470698,
+    "lon": 13.4380694
+  },
+  "joachim-gottschalk-weg 41, 12353 berlin": {
+    "lat": 52.4231018,
+    "lon": 13.4778267
+  },
+  "eugen-bolz-kehre 12, 12351 berlin": {
+    "lat": 52.4299083,
+    "lon": 13.4689705
+  },
+  "blankenburger chaussee 31, 13125 berlin": {
+    "lat": 52.6028366,
+    "lon": 13.4721278
+  },
+  "franz-schmidt-straße 8-10, 13125 berlin": {
+    "lat": 52.63263999999999,
+    "lon": 13.49562
+  },
+  "blankenburger straße 141, 13127 berlin": {
+    "lat": 52.5873449,
+    "lon": 13.4265975
+  },
+  "treskowstraße 15, 13089 berlin": {
+    "lat": 52.5610517,
+    "lon": 13.4317063
+  },
+  "berliner straße 100, 13189 berlin": {
+    "lat": 52.5617008,
+    "lon": 13.413708
+  },
+  "mühlenstraße 21, 13187 berlin": {
+    "lat": 52.5652075,
+    "lon": 13.4063978
+  },
+  "mühlenstraße 33, 13187 berlin": {
+    "lat": 52.56223199999999,
+    "lon": 13.4097943
+  },
+  "wollankstraße 19, 13187 berlin": {
+    "lat": 52.5657368,
+    "lon": 13.3949
+  },
+  "schönholzer straße 10, 13187 berlin": {
+    "lat": 52.5700262,
+    "lon": 13.3995698
+  },
+  "choriner straße 44, 10435 berlin": {
+    "lat": 52.5373178,
+    "lon": 13.4107965
+  },
+  "schönhauser allee 75, 10439 berlin": {
+    "lat": 52.5485766,
+    "lon": 13.4135845
+  },
+  "dunckerstraße 32, 10439 berlin": {
+    "lat": 52.5477721,
+    "lon": 13.42589
+  },
+  "fehrbelliner straße 92, 10119 berlin": {
+    "lat": 52.5312023,
+    "lon": 13.4076455
+  },
+  "schönhauser allee 182, 10119 berlin": {
+    "lat": 52.5305066,
+    "lon": 13.4100124
+  },
+  "greifswalder straße 87, 10409 berlin": {
+    "lat": 52.5420558,
+    "lon": 13.4410392
+  },
+  "dunckerstraße 14, 10437 berlin": {
+    "lat": 52.5428383,
+    "lon": 13.4217326
+  },
+  "prenzlauer allee 227/ 228, 10405 berlin": {
+    "lat": 52.5333592,
+    "lon": 13.4202734
+  },
+  "kollwitzstraße 35, 10405 berlin": {
+    "lat": 52.5339255,
+    "lon": 13.4146325
+  },
+  "kollwitzstraße 94, 10435 berlin": {
+    "lat": 52.5386991,
+    "lon": 13.4210758
+  },
+  "kuglerstraße 11, 10439 berlin": {
+    "lat": 52.5527077,
+    "lon": 13.4167125
+  },
+  "oderberger straße 12, 10435 berlin": {
+    "lat": 52.5391346,
+    "lon": 13.4090177
+  },
+  "schwedter straße 90, 10437 berlin": {
+    "lat": 52.54794649999999,
+    "lon": 13.4001447
+  },
+  "storkower straße 139d, 10407 berlin": {
+    "lat": 52.5329385,
+    "lon": 13.4546721
+  },
+  "storkower straße 118 und 118 a, 10407 berlin": {
+    "lat": 52.53458029999999,
+    "lon": 13.4511068
+  },
+  "storkower straße 139 c, 10407 berlin": {
+    "lat": 52.5331476,
+    "lon": 13.4543476
+  },
+  "straßburger sraße 5, 10405 berlin": {
+    "lat": 52.5288495,
+    "lon": 13.4128714
+  },
+  "pistoriusstraße 23, 13086 berlin": {
+    "lat": 52.5524836,
+    "lon": 13.4521354
+  },
+  "börnestraße 12, 13086 berlin": {
+    "lat": 52.548687,
+    "lon": 13.4477436
+  },
+  "mahlerstraße 4, 13088 berlin": {
+    "lat": 52.54822309999999,
+    "lon": 13.4526772
+  },
+  "romain-rolland-straße 14-24, 13089 berlin": {
+    "lat": 52.56516240000001,
+    "lon": 13.4460166
+  },
+  "sterkrader straße 45, 13507 berlin": {
+    "lat": 52.5764964,
+    "lon": 13.2844533
+  },
+  "quäkerstraße 2, 13403 berlin": {
+    "lat": 52.5725647,
+    "lon": 13.3084379
+  },
+  "kopenhagener str. 29, 13407 berlin": {
+    "lat": 52.54887060000001,
+    "lon": 13.4036427
+  },
+  "brienzer straße 22, 13407 berlin": {
+    "lat": 52.56014649999999,
+    "lon": 13.3608341
+  },
+  "provinzstraße 35-38, 13409 berlin": {
+    "lat": 52.5662568,
+    "lon": 13.3785712
+  },
+  "wilhelmsruher damm 124, 13439 berlin": {
+    "lat": 52.59808169999999,
+    "lon": 13.3577957
+  },
+  "holländerstraße 117, 13407 berlin": {
+    "lat": 52.5617324,
+    "lon": 13.3611973
+  },
+  "oranienburger straße 285, 13437 berlin": {
+    "lat": 52.58013829999999,
+    "lon": 13.3318518
+  },
+  "spießweg 7-9, 13437 berlin": {
+    "lat": 52.5920089,
+    "lon": 13.3300988
+  },
+  "am schäfersee 3, 13407 berlin": {
+    "lat": 52.56367789999999,
+    "lon": 13.3635688
+  },
+  "zabel-krüger-damm 52, 13469 berlin": {
+    "lat": 52.60997709999999,
+    "lon": 13.3359862
+  },
+  "wilhelmsruher damm 148, 13439 berlin": {
+    "lat": 52.5969481,
+    "lon": 13.3512525
+  },
+  "oranienburger straße 204, 13437 berlin": {
+    "lat": 52.5935639,
+    "lon": 13.3329936
+  },
+  "oranienburger chaussee 33 c, 13465 berlin": {
+    "lat": 52.6407749,
+    "lon": 13.3032129
+  },
+  "falkenseer chaussee 154, 13589 berlin": {
+    "lat": 52.55368679999999,
+    "lon": 13.1506965
+  },
+  "bernkastler weg 26, 13587 berlin": {
+    "lat": 52.5682598,
+    "lon": 13.2144405
+  },
+  "haselhorster damm 9, 13599 berlin": {
+    "lat": 52.5435639,
+    "lon": 13.2388518
+  },
+  "wattstr. 13, 13629 berlin": {
+    "lat": 52.5358648,
+    "lon": 13.2660627
+  },
+  "obstallee 22e, 13593 berlin": {
+    "lat": 52.5224049,
+    "lon": 13.1658988
+  },
+  "bergstraße 51, 12169 berlin": {
+    "lat": 52.4587719,
+    "lon": 13.3471219
+  },
+  "jungfernstieg 18, 12207 berlin": {
+    "lat": 52.4326897,
+    "lon": 13.3290495
+  },
+  "emmichstraße 8, 12249 berlin": {
+    "lat": 52.4280646,
+    "lon": 13.3571413
+  },
+  "emmichstr. 2a, 12249 berlin": {
+    "lat": 52.42795049999999,
+    "lon": 13.3558324
+  },
+  "schütte-lanz-straße 41, 12209 berlin": {
+    "lat": 52.4131356,
+    "lon": 13.3277928
+  },
+  "celsiusstraße 60, 12207 berlin": {
+    "lat": 52.4117551,
+    "lon": 13.3118406
+  },
+  "am beelitzhof 12-16, 14129 berlin": {
+    "lat": 52.43213489999999,
+    "lon": 13.1907788
+  },
+  "jeverstraße 9, 12157 berlin": {
+    "lat": 52.46174620000001,
+    "lon": 13.3350417
+  },
+  "bismarckstraße 63, 12169 berlin": {
+    "lat": 52.4591394,
+    "lon": 13.3396959
+  },
+  "kuhligkshofstraße 4-6, 12165 berlin": {
+    "lat": 52.4555349,
+    "lon": 13.3205199
+  },
+  "schlosstraße 44a, 12165 berlin": {
+    "lat": 52.45603329999999,
+    "lon": 13.3185609
+  },
+  "leonorenstraße 85, 12247 berlin": {
+    "lat": 52.4376529,
+    "lon": 13.3450501
+  },
+  "am eichgarten 14, 12167 berlin": {
+    "lat": 52.4461974,
+    "lon": 13.3347896
+  },
+  "otto-von-simson-straße 26, 14195 berlin": {
+    "lat": 52.4524771,
+    "lon": 13.2886437
+  },
+  "kuhligkshofstraße 5, 12165 berlin": {
+    "lat": 52.4550823,
+    "lon": 13.3200113
+  },
+  "zum heckeshorn 30, 14109 berlin": {
+    "lat": 52.429502,
+    "lon": 13.1613429
+  },
+  "königstraße 42, 14109 berlin": {
+    "lat": 52.4185768,
+    "lon": 13.1483467
+  },
+  "kirchstraße 6, 14163 berlin": {
+    "lat": 52.4339169,
+    "lon": 13.2578077
+  },
+  "argentinische allee 28, 14163 berlin": {
+    "lat": 52.4416715,
+    "lon": 13.2381005
+  },
+  "wupperstraße 17-21, 14167 berlin": {
+    "lat": 52.4109193,
+    "lon": 13.2735067
+  },
+  "mühlenstraße 45, 14167 berlin": {
+    "lat": 52.4309863,
+    "lon": 13.2748071
+  },
+  "marshallstraße 3, 14169 berlin": {
+    "lat": 52.4529625,
+    "lon": 13.2673625
+  },
+  "fahrenheitsstr. 28, 12207 berlin": {
+    "lat": 52.4132937,
+    "lon": 13.3139072
+  },
+  "alboinplatz 17-18, 12105 berlin": {
+    "lat": 52.4598293,
+    "lon": 13.3675649
+  },
+  "bundesallee 76a, 12161 berlin": {
+    "lat": 52.4716975,
+    "lon": 13.3283975
+  },
+  "kurfürstenstraße 12, 12105 berlin": {
+    "lat": 52.4469048,
+    "lon": 13.3709412
+  },
+  "fregestraße 12, 12159 berlin": {
+    "lat": 52.4701223,
+    "lon": 13.3370133
+  },
+  "waldsassener straße 9, 12279 berlin": {
+    "lat": 52.4131113,
+    "lon": 13.3503657
+  },
+  "an der apostelkirche 1, 10783 berlin": {
+    "lat": 52.50062579999999,
+    "lon": 13.3587097
+  },
+  "gustav-freytag-straße 1, 10827 berlin": {
+    "lat": 52.48064,
+    "lon": 13.3495896
+  },
+  "kurmärkische straße 1-3, 10783 berlin": {
+    "lat": 52.4994277,
+    "lon": 13.3592489
+  },
+  "nollendorfplatz, 10787 berlin": {
+    "lat": 52.5001421,
+    "lon": 13.3540573
+  },
+  "columbiadamm 84, 10965 berlin": {
+    "lat": 52.48081000000001,
+    "lon": 13.4012955
+  },
+  "kolonnenstraße 10, 10829 berlin": {
+    "lat": 52.4856954,
+    "lon": 13.3618018
+  },
+  "colditzstraße 32, 12099 berlin": {
+    "lat": 52.454816,
+    "lon": 13.3951405
+  },
+  "porschestraße 22-24, 12107 berlin": {
+    "lat": 52.4344189,
+    "lon": 13.3743762
+  },
+  "an der wuhlheide 169, 12459 berlin": {
+    "lat": 52.4641695,
+    "lon": 13.5428654
+  },
+  "stienitzseestraße 32, 12489 berlin": {
+    "lat": 52.4402424,
+    "lon": 13.54978
+  },
+  "plesser straße 3, 12435 berlin": {
+    "lat": 52.4892456,
+    "lon": 13.4521399
+  },
+  "kiefholzstraße 21, 12435 berlin": {
+    "lat": 52.4906017,
+    "lon": 13.4513882
+  },
+  "dahmestraße 33, 12526 berlin": {
+    "lat": 52.40198119999999,
+    "lon": 13.5706718
+  },
+  "müggelseedamm 244, 12587 berlin": {
+    "lat": 52.461374,
+    "lon": 13.6406056
+  },
+  "hoernlestraße 51, 12555 berlin": {
+    "lat": 52.4634885,
+    "lon": 13.5779024
+  },
+  "lobitzweg 1, 12557 berlin": {
+    "lat": 52.4356179,
+    "lon": 13.5864922
+  },
+  "schubertstraße 23, 12555 berlin": {
+    "lat": 52.4619359,
+    "lon": 13.5707626
+  },
+  "alfred-randt-straße 52, 12559 berlin": {
+    "lat": 52.4395088,
+    "lon": 13.6046034
+  },
+  "salvador-allende-straße 89, 12559 berlin": {
+    "lat": 52.445409,
+    "lon": 13.5933278
+  },
+  "hasselwerder straße 38-40, 12439 berlin": {
+    "lat": 52.4551009,
+    "lon": 13.5136863
+  },
+  "spreestraße 8, 12439 berlin": {
+    "lat": 52.4578159,
+    "lon": 13.5129618
+  },
+  "michael-brückner-straße 42, 12439 berlin": {
+    "lat": 52.45521549999999,
+    "lon": 13.5101568
+  },
+  "wilheminhofstraße 75a, 12459 berlin": {
+    "lat": 52.4581028,
+    "lon": 13.5260219
+  },
+  "schillerpromenade 7a, 12459 berlin": {
+    "lat": 52.4621288,
+    "lon": 13.5174044
+  },
+  "slabystraße 17, 12459 berlin": {
+    "lat": 52.4591281,
+    "lon": 13.5310687
+  },
+  "lindenstraße 18 -19, 12555 berlin": {
+    "lat": 52.45452,
+    "lon": 13.5683699
+  },
+  "alte kaulsdorferstraße 18, 12555 berlin": {
+    "lat": 52.4607801,
+    "lon": 13.5765493
+  },
+  "myliusgarten 20, 12587 berlin": {
+    "lat": 52.4519025,
+    "lon": 13.6231088
+  },
+  "charlotte-e.-pauly-straße 1, 12587 berlin": {
+    "lat": 52.4476847,
+    "lon": 13.6160287
+  },
+  "karl-kunger-str. 30, 12435 berlin": {
+    "lat": 52.4887284,
+    "lon": 13.450422
+  }
+}
