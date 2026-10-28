@@ -1,15 +1,22 @@
 import 'dotenv/config';
+import path from 'path';
 import { getDatabase, closeDatabase } from './db/index';
 import { buildApp } from './app';
 import { seedInitialData } from './db/seed';
 import { UserRoleModel } from './db/models/userRoles';
 import { UserRoleType } from '@shared/types';
+import { syncFromGCS, syncToGCS } from './db/gcsSync';
 
 const PORT = Number(process.env.PORT) || 8080;
 const HOST = process.env.HOST || '0.0.0.0';
 
 async function start() {
-  const db = getDatabase();
+  const dbPath = process.env.DATABASE_PATH || path.resolve(process.cwd(), 'data', 'abgabestellen.db');
+
+  // Sync latest SQLite database from Cloud Storage if configured
+  await syncFromGCS(dbPath);
+
+  const db = getDatabase(dbPath);
 
   // Run seed check (auto-seeds Berlin regions and sample stores if empty)
   seedInitialData(db);
@@ -43,8 +50,13 @@ async function start() {
   // Graceful shutdown on Cloud Run container termination
   const shutdown = async (signal: string) => {
     console.log(`Received ${signal}. Gracefully terminating abgabestellen.app...`);
-    await app.close();
-    closeDatabase();
+    try {
+      await app.close();
+      closeDatabase();
+      await syncToGCS(dbPath);
+    } catch (e: any) {
+      console.error('Error during shutdown sync:', e.message);
+    }
     process.exit(0);
   };
 

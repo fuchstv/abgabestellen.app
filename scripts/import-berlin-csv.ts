@@ -38,14 +38,41 @@ function parseStandColumn(standStr: string): { isoDate: string | null; initials:
   };
 }
 
-function isBerlinLandline(phone: string): boolean {
-  if (!phone) return false;
-  const clean = phone.replace(/[^0-9+]/g, '');
-  // Landline Berlin: 030 or +4930 or 004930
-  if (clean.startsWith('030') || clean.startsWith('+4930') || clean.startsWith('004930')) {
-    return true;
+function extractBerlinLandlineOnly(phone: string): string | null {
+  if (!phone) return null;
+  let result: string | null = null;
+
+  if (/(?:015|016|017|\+49\s*1[567])/.test(phone)) {
+    const lines = phone.split(/[\n\r]+/);
+    const cleanLines = lines.filter(l => !/(?:015|016|017|\+49\s*1[567])/.test(l) && /(?:030|\+49\s*30)/.test(l));
+    if (cleanLines.length > 0) {
+      const sanitized = cleanLines.map(l => l.replace(/\s*oder\s+.*$/i, '').replace(/\s*\/\s*01[567].*$/, '').trim()).join(' / ');
+      if (sanitized && !/(?:015|016|017)/.test(sanitized)) {
+        result = sanitized;
+      }
+    }
+    if (!result) {
+      const singleLineClean = phone.replace(/\s*(?:oder|\/)\s*(?:Fr\s+\w+\s*:\s*)?01[567][0-9\s–\-]*/gi, '').trim();
+      if (!/(?:015|016|017)/.test(singleLineClean) && /(?:030|\+49\s*30)/.test(singleLineClean)) {
+        result = singleLineClean;
+      }
+    }
+  } else {
+    const clean = phone.replace(/[^0-9+]/g, '');
+    if (clean.startsWith('030') || clean.startsWith('+4930') || clean.startsWith('004930')) {
+      result = phone.trim();
+    }
   }
-  return false;
+
+  if (result) {
+    result = result.replace(/\s*(?:oder|\/)\s*$/, '').trim();
+    // Absolute GDPR Safety Guarantee: If any mobile prefix remains, strictly return null!
+    if (/(?:015|016|017)/.test(result)) {
+      return null;
+    }
+    return result;
+  }
+  return null;
 }
 
 export async function importBerlinCsv(csvPath?: string, databaseInstance?: any, options?: { skipGeocoding?: boolean }) {
@@ -241,9 +268,11 @@ export async function importBerlinCsv(csvPath?: string, databaseInstance?: any, 
 
       // DSGVO Phone Logic: Only publish landlines (030...) if registration is required. Mobile numbers are strictly confidential.
       let publicPhone: string | null = null;
-      if (item.registrationRequired && item.telefon && isBerlinLandline(item.telefon)) {
-        publicPhone = item.telefon;
-        landlineCount++;
+      if (item.registrationRequired && item.telefon) {
+        publicPhone = extractBerlinLandlineOnly(item.telefon);
+        if (publicPhone) {
+          landlineCount++;
+        }
       }
       if (item.telefon) {
         confidentialPhoneCount++;

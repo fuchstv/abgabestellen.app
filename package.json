@@ -23,6 +23,7 @@
     "@fastify/static": "^7.0.4",
     "@fastify/swagger": "^8.14.0",
     "@fastify/swagger-ui": "^3.0.0",
+    "@google-cloud/storage": "^8.4.0",
     "better-sqlite3": "^11.8.1",
     "csv-parse": "^7.0.3",
     "dotenv": "^16.4.7",
