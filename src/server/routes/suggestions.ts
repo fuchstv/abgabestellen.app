@@ -6,6 +6,7 @@ import { RegionModel } from '../db/models/regions';
 import { PermissionService } from '../auth/permissions';
 import { requireAuthMiddleware } from '../auth/authMiddleware';
 import { GivingStoreSuggestionPayload, SuggestionStatus } from '@shared/types';
+import { notifyNewSuggestion } from '../services/notificationService';
 
 export async function suggestionRoutes(fastify: FastifyInstance, options: { db: Database }) {
   const suggestionModel = new SuggestionModel(options.db);
@@ -43,7 +44,20 @@ export async function suggestionRoutes(fastify: FastifyInstance, options: { db: 
       author_note: body.author_note
     });
 
-    return reply.status(201).send(suggestion);
+    const region = regionModel.getRegionById(store.bezirk_id);
+    notifyNewSuggestion({
+      regionName: region?.name || 'Region ' + store.bezirk_id,
+      storeName: store.name,
+      authorEmail: request.user!.email,
+      authorNote: body.author_note,
+      payload: body.payload,
+      logger: request.log
+    }).catch(err => request.log.warn({ err: err.message }, 'Background suggestion notification failed'));
+
+    return reply.status(201).send({
+      ...suggestion,
+      message: 'Vielen Dank! Dein Vorschlag wurde gespeichert und liegt nun im Prüf-Eingang der AG Abgabestellen.'
+    });
   });
 
   // POST /api/regions/:id/suggestions (Propose new drop-off store)
@@ -76,7 +90,19 @@ export async function suggestionRoutes(fastify: FastifyInstance, options: { db: 
       author_note: body.author_note
     });
 
-    return reply.status(201).send(suggestion);
+    notifyNewSuggestion({
+      regionName: region.name,
+      storeName: body.payload.name,
+      authorEmail: request.user!.email,
+      authorNote: body.author_note,
+      payload: body.payload,
+      logger: request.log
+    }).catch(err => request.log.warn({ err: err.message }, 'Background suggestion notification failed'));
+
+    return reply.status(201).send({
+      ...suggestion,
+      message: 'Vielen Dank! Dein Vorschlag wurde gespeichert und liegt nun im Prüf-Eingang der AG Abgabestellen.'
+    });
   });
 
   // GET /api/regions/:id/suggestions (Manager review inbox)

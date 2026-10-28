@@ -22,13 +22,21 @@
         </p>
       </div>
 
-      <div class="flex items-center gap-3">
+      <div class="flex flex-wrap items-center gap-2">
+        <button 
+          v-if="permissions?.canManageStore"
+          @click="isDirectEditOpen = true" 
+          type="button" 
+          class="bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm"
+        >
+          <span>✏️ Direkt bearbeiten (AG-Modus)</span>
+        </button>
         <button 
           @click="isSuggestionOpen = true" 
           type="button" 
-          class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs px-4 py-2 rounded-lg transition-colors"
+          class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs px-3.5 py-2 rounded-lg transition-colors"
         >
-          ✏️ Änderung vorschlagen
+          Änderung vorschlagen
         </button>
       </div>
     </div>
@@ -73,6 +81,15 @@
       @close="isSuggestionOpen = false"
       @submitted="reloadStore"
     />
+
+    <!-- Direct Edit Modal (AG Manager only) -->
+    <DirectEditStoreModal 
+      v-if="store && permissions?.canManageStore"
+      :is-open="isDirectEditOpen" 
+      :store="store"
+      @close="isDirectEditOpen = false"
+      @updated="reloadStore"
+    />
   </div>
 </template>
 
@@ -84,6 +101,7 @@ import { fetchApi } from '../state';
 import StoreGivingDetailsCard from '../components/StoreGivingDetailsCard.vue';
 import StoreContactLogTab from '../components/StoreContactLogTab.vue';
 import SuggestionModal from '../components/SuggestionModal.vue';
+import DirectEditStoreModal from '../components/DirectEditStoreModal.vue';
 
 const route = useRoute();
 const store = ref<any | null>(null);
@@ -91,6 +109,7 @@ const permissions = ref<StorePermissions | null>(null);
 const contactLogs = ref<any[]>([]);
 const activeTab = ref<'details' | 'contacts'>('details');
 const isSuggestionOpen = ref(false);
+const isDirectEditOpen = ref(false);
 
 async function reloadStore() {
   const storeId = route.params.storeId;

@@ -133,8 +133,9 @@ async function submitSuggestion() {
 
   submitting.value = true;
   try {
+    let res: any;
     if (props.isNewStore) {
-      await fetchApi(`/api/regions/${props.regionId}/suggestions`, {
+      res = await fetchApi(`/api/regions/${props.regionId}/suggestions`, {
         method: 'POST',
         body: JSON.stringify({
           payload: form,
@@ -142,7 +143,7 @@ async function submitSuggestion() {
         })
       });
     } else {
-      await fetchApi(`/api/giving-stores/${props.targetStore!.id}/suggestions`, {
+      res = await fetchApi(`/api/giving-stores/${props.targetStore!.id}/suggestions`, {
         method: 'POST',
         body: JSON.stringify({
           payload: form,
@@ -151,7 +152,7 @@ async function submitSuggestion() {
       });
     }
 
-    alert('Vielen Dank! Dein Vorschlag wurde eingereicht und wird von der regionalen Arbeitsgruppe geprüft.');
+    alert(res?.message || 'Vielen Dank! Dein Vorschlag wurde gespeichert und liegt nun im Prüf-Eingang der AG Abgabestellen.');
     emit('submitted');
     emit('close');
   } catch (err: any) {

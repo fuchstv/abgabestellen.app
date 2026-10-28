@@ -14,8 +14,16 @@
         </p>
       </div>
 
-      <!-- Invite link generator modal trigger -->
-      <div>
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap items-center gap-3">
+        <button 
+          @click="downloadCsvBackup" 
+          type="button" 
+          :disabled="downloadingCsv"
+          class="bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
+        >
+          <span>{{ downloadingCsv ? '⏳ Bereite Export vor...' : '📥 Backup als Tabelle (CSV) herunterladen' }}</span>
+        </button>
         <button 
           @click="showInviteModal = true" 
           type="button" 
@@ -193,13 +201,45 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { appState, fetchApi } from '../state';
+import { appState, authState, fetchApi } from '../state';
 
 const pendingSuggestions = ref<any[]>([]);
 const overdueStores = ref<any[]>([]);
 const showInviteModal = ref(false);
 const selectedInviteRegion = ref<number>(appState.currentRegion?.id || 1);
 const generatedInviteLink = ref('');
+const downloadingCsv = ref(false);
+
+async function downloadCsvBackup() {
+  const regionId = appState.currentRegion?.id || 1;
+  downloadingCsv.value = true;
+  try {
+    const headers = new Headers();
+    if (authState.token) {
+      headers.set('Authorization', `Bearer ${authState.token}`);
+    }
+    const res = await fetch(`/api/regions/${regionId}/export-berlin.csv`, { headers });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(err.message || err.error || 'Fehler beim Herunterladen des Backups');
+      return;
+    }
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const regionName = (appState.currentRegion?.name || 'berlin').toLowerCase().replace(/[^a-z0-9]/g, '-');
+    a.download = `abgabestellen-${regionName}-backup-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (err: any) {
+    alert(err.message || 'Fehler beim Herunterladen des Backups');
+  } finally {
+    downloadingCsv.value = false;
+  }
+}
 
 function formatDate(isoStr: string) {
   try {
