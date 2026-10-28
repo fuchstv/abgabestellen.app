@@ -1,10 +1,11 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-slate-50">
+  <div class="h-full flex flex-col bg-slate-50 overflow-hidden">
     <Navbar @openNewStoreModal="isNewStoreModalOpen = true" />
-    <main class="flex-1 flex flex-col">
+    <main class="flex-1 min-h-0 flex flex-col overflow-y-auto relative">
       <router-view />
+      <LegalFooter v-if="!isMapView" />
     </main>
-    <LegalFooter />
+    <LegalFooter v-if="isMapView" />
 
     <!-- Global New Store Proposal Modal -->
     <SuggestionModal 
@@ -19,12 +20,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import { appState, fetchApi } from './state';
 import { Region } from '@shared/types';
 import Navbar from './components/Navbar.vue';
 import LegalFooter from './components/LegalFooter.vue';
 import SuggestionModal from './components/SuggestionModal.vue';
+
+const route = useRoute();
+const isMapView = computed(() => {
+  return route.name === 'map' || route.path === '/' || route.path.startsWith('/regions/');
+});
 
 const isNewStoreModalOpen = ref(false);
 

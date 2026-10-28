@@ -1,9 +1,9 @@
 <template>
-  <div class="flex-1 flex flex-col md:flex-row h-[calc(100vh-3.5rem)] overflow-hidden">
+  <div class="flex-1 flex flex-col md:flex-row h-full min-h-0 overflow-hidden">
     <!-- Left Sidebar: Stores List -->
-    <div class="w-full md:w-96 bg-white border-r border-slate-200 flex flex-col h-full z-10">
+    <div class="w-full md:w-96 max-h-[45vh] md:max-h-none bg-white border-r border-slate-200 flex flex-col h-auto md:h-full min-h-0 z-10 shrink-0">
       <!-- Search & quick filter -->
-      <div class="p-4 border-b border-slate-200 space-y-2">
+      <div class="p-4 border-b border-slate-200 space-y-2 shrink-0">
         <input 
           v-model="searchQuery" 
           type="text" 
@@ -25,7 +25,7 @@
       </div>
 
       <!-- Store items list -->
-      <div class="flex-1 overflow-y-auto divide-y divide-slate-100 p-2 space-y-1">
+      <div class="flex-1 min-h-0 overflow-y-auto divide-y divide-slate-100 p-2 space-y-1">
         <div 
           v-for="store in filteredStores" 
           :key="store.id"
@@ -67,7 +67,7 @@
     </div>
 
     <!-- Right: Map Container & Active Bubble Overlay -->
-    <div class="flex-1 relative bg-slate-100 h-full">
+    <div class="flex-1 relative bg-slate-100 h-full min-h-0 overflow-hidden">
       <div id="map" ref="mapContainer" class="w-full h-full"></div>
 
       <!-- Quick Reset / Center button -->
@@ -128,6 +128,7 @@ const suggestStoreTarget = ref<PublicStore | null>(null);
 
 let googleMap: any = null;
 let markers: any[] = [];
+let resizeObserver: ResizeObserver | null = null;
 
 const filteredStores = computed(() => {
   return stores.value.filter(s => {
@@ -164,25 +165,30 @@ async function loadStores() {
 
 function fitMapToMarkers() {
   const g = (window as any).google;
-  if (!g?.maps || !googleMap || filteredStores.value.length === 0) return;
+  if (!g?.maps || !googleMap) return;
+
+  if (filteredStores.value.length === 0) {
+    const defaultLat = appState.currentRegion?.lat ? Number(appState.currentRegion.lat) : 52.52;
+    const defaultLng = appState.currentRegion?.lon ? Number(appState.currentRegion.lon) : 13.405;
+    googleMap.setCenter({ lat: defaultLat, lng: defaultLng });
+    googleMap.setZoom(11);
+    return;
+  }
 
   const bounds = new g.maps.LatLngBounds();
   let count = 0;
 
   filteredStores.value.forEach(store => {
-    if (store.lat && store.lon) {
-      bounds.extend({ lat: Number(store.lat), lng: Number(store.lon) });
+    const lat = Number(store.lat);
+    const lng = Number(store.lon);
+    if (Number.isFinite(lat) && Number.isFinite(lng) && lat !== 0 && lng !== 0) {
+      bounds.extend({ lat, lng });
       count++;
     }
   });
 
   if (count > 0) {
-    googleMap.fitBounds(bounds, {
-      top: 50,
-      right: 50,
-      bottom: 50,
-      left: 50
-    });
+    googleMap.fitBounds(bounds, 40);
     // Prevent excessive zoom when only 1 store is visible
     const listener = g.maps.event.addListener(googleMap, 'idle', () => {
       if (googleMap.getZoom() > 16) {
@@ -190,13 +196,16 @@ function fitMapToMarkers() {
       }
       g.maps.event.removeListener(listener);
     });
+  } else {
+    googleMap.setCenter({ lat: 52.52, lng: 13.405 });
+    googleMap.setZoom(11);
   }
 }
 
 function selectStore(store: PublicStore) {
   selectedStore.value = store;
   if (googleMap && store.lat && store.lon) {
-    googleMap.panTo({ lat: store.lat, lng: store.lon });
+    googleMap.panTo({ lat: Number(store.lat), lng: Number(store.lon) });
     googleMap.setZoom(15);
   }
 }
@@ -211,8 +220,8 @@ function onSuggestionSubmitted() {
 }
 
 async function initMap() {
-  const centerLat = appState.currentRegion?.lat || 52.52;
-  const centerLon = appState.currentRegion?.lon || 13.405;
+  const centerLat = appState.currentRegion?.lat ? Number(appState.currentRegion.lat) : 52.52;
+  const centerLon = appState.currentRegion?.lon ? Number(appState.currentRegion.lon) : 13.405;
 
   let apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
   if (!apiKey) {
@@ -246,7 +255,7 @@ function setupGoogleMapInstance(lat: number, lng: number) {
   if (!g?.maps) return;
 
   googleMap = new g.maps.Map(mapContainer.value, {
-    center: { lat, lng },
+    center: { lat: lat || 52.52, lng: lng || 13.405 },
     zoom: 11,
     mapTypeControl: false,
     streetViewControl: false,
@@ -257,10 +266,22 @@ function setupGoogleMapInstance(lat: number, lng: number) {
   });
 
   renderMarkers();
+
+  // Watch for container resizes
+  if (window.ResizeObserver && mapContainer.value) {
+    if (resizeObserver) resizeObserver.disconnect();
+    resizeObserver = new ResizeObserver(() => {
+      if (googleMap && g.maps) {
+        g.maps.event.trigger(googleMap, 'resize');
+      }
+    });
+    resizeObserver.observe(mapContainer.value);
+  }
+
   setTimeout(() => {
     g.maps.event.trigger(googleMap, 'resize');
     fitMapToMarkers();
-  }, 200);
+  }, 150);
 }
 
 function renderMarkers() {
@@ -275,7 +296,7 @@ function renderMarkers() {
     if (!store.lat || !store.lon) return;
 
     const marker = new g.maps.Marker({
-      position: { lat: store.lat, lng: store.lon },
+      position: { lat: Number(store.lat), lng: Number(store.lon) },
       map: googleMap,
       title: store.name,
       icon: {
