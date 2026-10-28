@@ -57,6 +57,13 @@ export function buildApp(db: Database, options: { logger?: boolean } = {}): Fast
     return { status: 'ok', timestamp: new Date().toISOString() };
   });
 
+  // Client runtime configuration
+  app.get('/api/config', async () => {
+    return {
+      googleMapsApiKey: process.env.VITE_GOOGLE_MAPS_API_KEY || process.env.GOOGLE_MAPS_API_KEY || ''
+    };
+  });
+
   // Register API Routes
   app.register(regionRoutes, { db });
   app.register(givingStoreRoutes, { db });

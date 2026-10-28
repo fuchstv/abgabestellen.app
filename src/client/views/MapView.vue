@@ -169,7 +169,18 @@ async function initMap() {
   const centerLat = appState.currentRegion?.lat || 52.52;
   const centerLon = appState.currentRegion?.lon || 13.405;
 
-  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
+  let apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
+  if (!apiKey) {
+    try {
+      const res = await fetch('/api/config');
+      if (res.ok) {
+        const config = await res.json();
+        apiKey = config.googleMapsApiKey || '';
+      }
+    } catch (e) {
+      console.warn('Could not load Google Maps API key from /api/config', e);
+    }
+  }
 
   // Load Google Maps SDK dynamically if not present
   if (!(window as any).google?.maps) {

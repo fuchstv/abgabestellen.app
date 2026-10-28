@@ -13,6 +13,8 @@ COPY package*.json tsconfig.json vite.config.ts tailwind.config.js postcss.confi
 RUN npm ci
 
 COPY src/ ./src/
+ARG VITE_GOOGLE_MAPS_API_KEY
+ENV VITE_GOOGLE_MAPS_API_KEY=$VITE_GOOGLE_MAPS_API_KEY
 RUN npm run build
 
 # Stage 2: Production Dependencies Only
