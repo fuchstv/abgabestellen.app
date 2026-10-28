@@ -1,13 +1,76 @@
 import { FastifyInstance } from 'fastify';
 import { Database } from 'better-sqlite3';
+import crypto from 'crypto';
 import { UserRoleModel } from '../db/models/userRoles';
 import { PermissionService } from '../auth/permissions';
 import { requireAuthMiddleware } from '../auth/authMiddleware';
 import { UserRoleType } from '@shared/types';
 
+export function extractCleanToken(input: string): string {
+  if (!input) return '';
+  const trimmed = input.trim();
+  if (trimmed.includes('token=')) {
+    const m = trimmed.match(/token=([a-fA-F0-9]+)/);
+    if (m) return m[1];
+  }
+  if (trimmed.includes('/invite/')) {
+    const m = trimmed.match(/\/invite\/([a-fA-F0-9]+)/);
+    if (m) return m[1];
+  }
+  return trimmed;
+}
+
 export async function inviteRoutes(fastify: FastifyInstance, options: { db: Database }) {
   const userRoleModel = new UserRoleModel(options.db);
   const permissionService = new PermissionService(options.db);
+
+  // GET /api/invite/:token (Inspect invite token before redemption)
+  fastify.get('/api/invite/:token', async (request, reply) => {
+    const { token } = request.params as { token: string };
+    if (!token) {
+      return reply.status(400).send({ valid: false, error: 'Token ist erforderlich' });
+    }
+
+    const cleanToken = extractCleanToken(token);
+    const tokenHash = crypto.createHash('sha256').update(cleanToken).digest('hex');
+
+    const tokenRecord = options.db.prepare(`
+      SELECT t.*, r.name as region_name, r.type as region_type
+      FROM fs_invite_token t
+      LEFT JOIN fs_bezirk r ON t.region_id = r.id
+      WHERE t.token_hash = ?
+    `).get(tokenHash) as any;
+
+    if (!tokenRecord) {
+      return reply.status(404).send({
+        valid: false,
+        error: 'Ungültiger Einladungslink. Bitte prüfe die URL oder fordere einen neuen Link an.'
+      });
+    }
+
+    if (tokenRecord.redeemed_by_user_id) {
+      return reply.status(410).send({
+        valid: false,
+        error: 'Dieser Einladungslink wurde bereits verwendet und ist nicht mehr gültig.'
+      });
+    }
+
+    if (new Date(tokenRecord.expires_at) < new Date()) {
+      return reply.status(410).send({
+        valid: false,
+        error: 'Dieser Einladungslink ist leider abgelaufen.'
+      });
+    }
+
+    return {
+      valid: true,
+      token: cleanToken,
+      region_id: tokenRecord.region_id,
+      region_name: tokenRecord.region_name || `Region #${tokenRecord.region_id}`,
+      role: tokenRecord.target_role,
+      expires_at: tokenRecord.expires_at
+    };
+  });
 
   // POST /api/invite/create (District Coordinator creates invite link)
   fastify.post('/api/invite/create', {
@@ -46,7 +109,8 @@ export async function inviteRoutes(fastify: FastifyInstance, options: { db: Data
       return reply.status(400).send({ error: 'token ist erforderlich' });
     }
 
-    const result = userRoleModel.redeemInviteToken(body.token, request.user!.uid);
+    const cleanToken = extractCleanToken(body.token);
+    const result = userRoleModel.redeemInviteToken(cleanToken, request.user!.uid);
     if (!result.success) {
       return reply.status(400).send({ error: result.error });
     }

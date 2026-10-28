@@ -155,7 +155,15 @@ async function handleLogin() {
     if (mode.value === 'password') {
       payload.password = password.value;
     } else {
-      payload.inviteOrSecret = inviteOrSecret.value;
+      let cleanInput = inviteOrSecret.value.trim();
+      if (cleanInput.includes('token=')) {
+        const m = cleanInput.match(/token=([a-fA-F0-9]+)/);
+        if (m) cleanInput = m[1];
+      } else if (cleanInput.includes('/invite/')) {
+        const m = cleanInput.match(/\/invite\/([a-fA-F0-9]+)/);
+        if (m) cleanInput = m[1];
+      }
+      payload.inviteOrSecret = cleanInput;
       if (newPassword.value) {
         payload.password = newPassword.value;
       }

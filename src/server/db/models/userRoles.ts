@@ -96,7 +96,15 @@ export class UserRoleModel {
 
   // Redeems invite token (atomic verification + double opt-in role assignment)
   redeemInviteToken(rawToken: string, redeemingUserId: string): { success: boolean; region_id?: number; role?: UserRoleType; error?: string } {
-    const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+    let cleanToken = (rawToken || '').trim();
+    if (cleanToken.includes('token=')) {
+      const m = cleanToken.match(/token=([a-fA-F0-9]+)/);
+      if (m) cleanToken = m[1];
+    } else if (cleanToken.includes('/invite/')) {
+      const m = cleanToken.match(/\/invite\/([a-fA-F0-9]+)/);
+      if (m) cleanToken = m[1];
+    }
+    const tokenHash = crypto.createHash('sha256').update(cleanToken).digest('hex');
 
     const redeemTransaction = this.db.transaction(() => {
       const tokenRecord = this.db.prepare(`

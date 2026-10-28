@@ -5,6 +5,7 @@ import { UserRoleModel } from '../db/models/userRoles';
 import { signToken } from '../auth/jwt';
 import { requireAuthMiddleware } from '../auth/authMiddleware';
 import { UserRoleType } from '@shared/types';
+import { extractCleanToken } from './invites';
 
 function hashPassword(password: string): string {
   const salt = crypto.randomBytes(16).toString('hex');
@@ -97,7 +98,8 @@ export async function authRoutes(fastify: FastifyInstance, options: { db: Databa
       const uid = user ? user.id : `usr_${crypto.randomBytes(8).toString('hex')}`;
       const pwHash = body.password ? hashPassword(body.password) : (user?.password_hash || null);
 
-      const redeemResult = userRoleModel.redeemInviteToken(body.inviteOrSecret.trim(), uid);
+      const cleanToken = extractCleanToken(body.inviteOrSecret);
+      const redeemResult = userRoleModel.redeemInviteToken(cleanToken, uid);
       if (!redeemResult.success) {
         return reply.status(400).send({ error: redeemResult.error || 'Ungültiger oder abgelaufener Einladungscode' });
       }
