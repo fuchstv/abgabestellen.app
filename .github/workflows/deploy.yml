@@ -1,0 +1,70 @@
+name: Build, Test & Deploy to Google Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: TypeScript Typecheck
+        run: npm run typecheck
+
+      - name: Run Test Suites (RBAC & Workflow APIs)
+        run: npm test
+
+      - name: Build Application
+        run: npm run build
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && secrets.GCP_SA_KEY != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Google Cloud Auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: abgabestellen-app-prod
+
+      - name: Build and Push Container to Artifact Registry
+        run: |
+          gcloud auth configure-docker europe-west3-docker.pkg.dev --quiet
+          docker build -t europe-west3-docker.pkg.dev/abgabestellen-app-prod/cloud-run-source-deploy/abgabestellen-web:${{ github.sha }} .
+          docker push europe-west3-docker.pkg.dev/abgabestellen-app-prod/cloud-run-source-deploy/abgabestellen-web:${{ github.sha }}
+
+      - name: Deploy to Cloud Run (europe-west3)
+        run: |
+          gcloud run deploy abgabestellen-web \
+            --image=europe-west3-docker.pkg.dev/abgabestellen-app-prod/cloud-run-source-deploy/abgabestellen-web:${{ github.sha }} \
+            --region=europe-west3 \
+            --platform=managed \
+            --allow-unauthenticated \
+            --min-instances=0 \
+            --max-instances=5 \
+            --cpu=1 \
+            --memory=512Mi \
+            --port=8080 \
+            --set-env-vars="NODE_ENV=production,GCP_PROJECT_ID=abgabestellen-app-prod,VITE_GOOGLE_MAPS_API_KEY=${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}"
