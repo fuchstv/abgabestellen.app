@@ -70,6 +70,17 @@
     <div class="flex-1 relative bg-slate-100 h-full">
       <div id="map" ref="mapContainer" class="w-full h-full"></div>
 
+      <!-- Quick Reset / Center button -->
+      <button 
+        v-if="filteredStores.length > 0"
+        @click="fitMapToMarkers" 
+        type="button"
+        class="absolute top-4 left-4 z-10 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-lg shadow-md border border-slate-200 flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+        title="Karte auf alle Abgabestellen zentrieren"
+      >
+        <span>🎯 Alle zentrieren ({{ filteredStores.length }})</span>
+      </button>
+
       <!-- Bubble overlay when store selected -->
       <div 
         v-if="selectedStore" 
@@ -141,10 +152,44 @@ async function loadStores() {
     const data = await fetchApi<PublicStore[]>(`/api/regions/${regionId}/giving-stores`);
     stores.value = data;
     renderMarkers();
+    setTimeout(() => {
+      fitMapToMarkers();
+    }, 100);
   } catch (err) {
     console.error('Failed to load stores', err);
   } finally {
     loading.value = false;
+  }
+}
+
+function fitMapToMarkers() {
+  const g = (window as any).google;
+  if (!g?.maps || !googleMap || filteredStores.value.length === 0) return;
+
+  const bounds = new g.maps.LatLngBounds();
+  let count = 0;
+
+  filteredStores.value.forEach(store => {
+    if (store.lat && store.lon) {
+      bounds.extend({ lat: Number(store.lat), lng: Number(store.lon) });
+      count++;
+    }
+  });
+
+  if (count > 0) {
+    googleMap.fitBounds(bounds, {
+      top: 50,
+      right: 50,
+      bottom: 50,
+      left: 50
+    });
+    // Prevent excessive zoom when only 1 store is visible
+    const listener = g.maps.event.addListener(googleMap, 'idle', () => {
+      if (googleMap.getZoom() > 16) {
+        googleMap.setZoom(15);
+      }
+      g.maps.event.removeListener(listener);
+    });
   }
 }
 
@@ -202,7 +247,7 @@ function setupGoogleMapInstance(lat: number, lng: number) {
 
   googleMap = new g.maps.Map(mapContainer.value, {
     center: { lat, lng },
-    zoom: 12,
+    zoom: 11,
     mapTypeControl: false,
     streetViewControl: false,
     styles: [
@@ -212,6 +257,10 @@ function setupGoogleMapInstance(lat: number, lng: number) {
   });
 
   renderMarkers();
+  setTimeout(() => {
+    g.maps.event.trigger(googleMap, 'resize');
+    fitMapToMarkers();
+  }, 200);
 }
 
 function renderMarkers() {
@@ -253,6 +302,7 @@ watch(() => route.params.regionId, () => {
 
 watch(filteredStores, () => {
   renderMarkers();
+  fitMapToMarkers();
 });
 
 onMounted(() => {
