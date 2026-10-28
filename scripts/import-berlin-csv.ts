@@ -195,7 +195,7 @@ export async function importBerlinCsv(csvPath?: string, databaseInstance?: any, 
   let fallbackCount = 0;
 
   console.log(`⏳ Löse Koordinaten auf (Google Geocoding & Cache)...`);
-  const preparedRows = [];
+  const preparedRows: any[] = [];
   for (const row of dataRows) {
     const name = (row[0] || 'Unbenannte Abgabestelle').trim();
     const strasse = (row[1] || '').trim();

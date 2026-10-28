@@ -83,7 +83,7 @@ describe('Milestone 2 — Berlin CSV Import & Zero PII Leakage', () => {
   it('3. Internal CRM: Managers with WORKGROUP_GIVING_STORES can view internal contacts & logs', async () => {
     await importBerlinCsv(undefined, db, { skipGeocoding: true });
 
-    const managerUser = { uid: 'manager-alice', isSuperAdmin: false };
+    const managerUser = { uid: 'manager-alice', email: 'alice@abgabestellen.app', isSuperAdmin: false };
     userRoleModel.assignRole('manager-alice', 1, UserRoleType.WORKGROUP_GIVING_STORES);
 
     const sampleStore = storeModel.getInternalStoreById(1);

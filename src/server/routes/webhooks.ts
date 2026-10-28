@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { Database } from '../db';
+import { Database } from 'better-sqlite3';
 
 interface WebhookOptions {
   db: Database;
@@ -40,7 +40,7 @@ export async function webhookRoutes(app: FastifyInstance, _options: WebhookOptio
       }
     }
 
-    const payload = request.body;
+    const payload = request.body as any;
     if (!payload) {
       return reply.status(400).send({ error: 'Empty payload' });
     }
