@@ -12,6 +12,7 @@ interface NormalizedMailEvent {
   date: string;
   messageId?: string;
   size?: number;
+  snippet?: string;
 }
 
 export async function webhookRoutes(app: FastifyInstance, _options: WebhookOptions) {
@@ -44,10 +45,66 @@ export async function webhookRoutes(app: FastifyInstance, _options: WebhookOptio
       return reply.status(400).send({ error: 'Empty payload' });
     }
 
-    // Normalize incoming events (supports both Stalwart telemetry array and direct JSON)
+    // Normalize incoming events (supports Stalwart MTA Hook, Stalwart telemetry array, and direct JSON)
     const events: NormalizedMailEvent[] = [];
 
-    if (Array.isArray(payload)) {
+    if (payload.envelope) {
+      // Stalwart MTA Hook stage="data" format:
+      // {
+      //   context: { stage: "data", ... },
+      //   envelope: { from: { address: "..." }, to: [{ address: "..." }] },
+      //   message: { headers: [["Subject", "Hello"], ...], contents: "...", size: 123 }
+      // }
+      const fromAddr = payload.envelope.from?.address || (typeof payload.envelope.from === 'string' ? payload.envelope.from : 'Unbekannt');
+      const toRecipients: string[] = [];
+
+      if (Array.isArray(payload.envelope.to)) {
+        for (const rcpt of payload.envelope.to) {
+          if (typeof rcpt === 'string') {
+            toRecipients.push(rcpt);
+          } else if (rcpt?.address) {
+            toRecipients.push(rcpt.address);
+          }
+        }
+      } else if (typeof payload.envelope.to === 'string') {
+        toRecipients.push(payload.envelope.to);
+      } else if (payload.envelope.to?.address) {
+        toRecipients.push(payload.envelope.to.address);
+      }
+
+      let subject = '(Kein Betreff)';
+      let messageId: string | undefined;
+      let dateStr: string | undefined;
+
+      if (Array.isArray(payload.message?.headers)) {
+        for (const item of payload.message.headers) {
+          if (Array.isArray(item) && item.length >= 2) {
+            const kLower = String(item[0] || '').toLowerCase();
+            const cleanVal = String(item[1] || '').trim();
+            if (kLower === 'subject' && cleanVal) subject = cleanVal;
+            if (kLower === 'message-id' && cleanVal) messageId = cleanVal;
+            if (kLower === 'date' && cleanVal) dateStr = cleanVal;
+          }
+        }
+      }
+
+      const snippet = typeof payload.message?.contents === 'string'
+        ? payload.message.contents.slice(0, 400).trim()
+        : undefined;
+
+      const effectiveRecipients = toRecipients.length > 0 ? toRecipients : ['info@abgabestellen.app'];
+      for (const recipient of effectiveRecipients) {
+        events.push({
+          from: fromAddr,
+          to: recipient,
+          subject,
+          date: dateStr || new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' }),
+          messageId,
+          size: payload.message?.size,
+          snippet
+        });
+      }
+    } else if (Array.isArray(payload)) {
       for (const item of payload) {
         // Stalwart telemetry format: { event: "message-ingest.ham", timestamp, data: { from, to, subject, ... } }
         const data = item.data || item;
@@ -83,7 +140,12 @@ export async function webhookRoutes(app: FastifyInstance, _options: WebhookOptio
     }
 
     if (events.length === 0) {
-      return reply.send({ success: true, processed: 0, message: 'No email ingest events found in payload' });
+      return reply.send({
+        action: 'accept',
+        success: true,
+        processed: 0,
+        message: 'No email ingest events found in payload'
+      });
     }
 
     // Process alerts for each event
@@ -94,11 +156,21 @@ export async function webhookRoutes(app: FastifyInstance, _options: WebhookOptio
     }
 
     return reply.send({
+      action: 'accept',
       success: true,
       processed: results.length,
       results
     });
   });
+}
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 function getMailboxBadge(toEmail: string): { label: string; color: string; badge: string } {
@@ -192,8 +264,14 @@ async function sendEmailAlert(ev: NormalizedMailEvent, logger: any) {
       </div>
       <div class="field">
         <div class="label">Betreff</div>
-        <div class="subject">${ev.subject}</div>
+        <div class="subject">${escapeHtml(ev.subject)}</div>
       </div>
+      ${ev.snippet ? `
+      <div class="field">
+        <div class="label">Nachrichtenvorschau</div>
+        <div style="font-size: 13px; color: #334155; background: #f8fafc; padding: 12px 14px; border-radius: 8px; border-left: 4px solid ${color}; white-space: pre-wrap; font-family: monospace;">${escapeHtml(ev.snippet)}</div>
+      </div>
+      ` : ''}
       <div class="field" style="margin-bottom: 0;">
         <div class="label">Eingangszeitpunkt</div>
         <div class="value" style="font-size: 12px; color: #64748b;">${ev.date}</div>
@@ -215,7 +293,7 @@ Postfach: ${ev.to}
 Absender: ${ev.from}
 Betreff:  ${ev.subject}
 Zeit:     ${ev.date}
-
+${ev.snippet ? `\nVorschau:\n${ev.snippet}\n` : ''}
 Webmail:  https://mail.abgabestellen.app/
   `.trim();
 

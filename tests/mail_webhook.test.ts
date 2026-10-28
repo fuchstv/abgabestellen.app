@@ -120,4 +120,61 @@ describe('Mail Webhook & Resend Notification Route', () => {
     expect(res.json().processed).toBe(1);
     expect(sentCount).toBe(1);
   });
+
+  it('4. Supports Stalwart MTA Hook stage="data" payload and returns {"action":"Accept"}', async () => {
+    let sentPayload: any = null;
+    global.fetch = vi.fn().mockImplementation(async (url: string, options: any) => {
+      if (url === 'https://api.resend.com/emails') {
+        sentPayload = JSON.parse(options.body);
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({ id: 'email_hook_456' })
+        };
+      }
+      return { ok: false, status: 404 };
+    });
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/api/webhooks/mail-event',
+      headers: {
+        authorization: 'Bearer test_secret_12345'
+      },
+      payload: {
+        context: {
+          stage: 'data',
+          client: { ip: '1.2.3.4' }
+        },
+        envelope: {
+          from: { address: 'partner@berlin-food.de' },
+          to: [{ address: 'berlin@abgabestellen.app' }]
+        },
+        message: {
+          headers: [
+            ['Subject', 'Neue Kiste abgegeben\r\n'],
+            ['From', 'partner@berlin-food.de\r\n'],
+            ['To', 'berlin@abgabestellen.app\r\n']
+          ],
+          contents: 'Hallo Team, wir haben heute 3 Kisten Bananen bekommen.',
+          size: 320
+        }
+      }
+    });
+
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body.action).toBe('accept');
+    expect(body.success).toBe(true);
+    expect(body.processed).toBe(1);
+
+    expect(sentPayload).not.toBeNull();
+    expect(sentPayload.to).toEqual(['fuchstv@gmail.com']);
+    expect(sentPayload.subject).toContain('🟢 [BERLIN]');
+    expect(sentPayload.subject).toContain('partner@berlin-food.de');
+    expect(sentPayload.subject).toContain('Neue Kiste abgegeben');
+    expect(sentPayload.html).toContain('BERLIN');
+    expect(sentPayload.html).toContain('3 Kisten Bananen');
+    expect(sentPayload.text).toContain('3 Kisten Bananen');
+  });
 });
