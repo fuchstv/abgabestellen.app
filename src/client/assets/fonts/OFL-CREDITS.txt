@@ -1,0 +1,9 @@
+Font Licenses (SIL Open Font License 1.1)
+=========================================
+1. Alfa Slab One
+   Copyright (c) 2011, JM Solé (info@jmsole.cl)
+   Licensed under the SIL Open Font License, Version 1.1 (https://openfontlicense.org)
+
+2. Poppins
+   Copyright (c) 2014-2020, Indian Type Foundry (info@indiantypefoundry.com) & Jonny Pinhorn
+   Licensed under the SIL Open Font License, Version 1.1 (https://openfontlicense.org)

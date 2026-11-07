@@ -1,4 +1,4 @@
-import { reactive, ref } from 'vue';
+import { reactive } from 'vue';
 import { AuthUser, Region, RegionTreeItem } from '@shared/types';
 
 export const authState = reactive<{
@@ -34,6 +34,79 @@ export const appState = reactive<{
   filterWithoutRegistration: false,
   pendingSuggestionsCount: 0
 });
+
+/* ==========================================================================
+   Theme State (Light / Dark Mode — persisted in localStorage)
+   ========================================================================== */
+function detectInitialTheme(): 'light' | 'dark' {
+  if (typeof window === 'undefined') return 'light';
+  const saved = localStorage.getItem('fs_theme');
+  if (saved === 'dark' || saved === 'light') return saved;
+  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+export const themeState = reactive<{
+  mode: 'light' | 'dark';
+}>({
+  mode: detectInitialTheme()
+});
+
+export function applyTheme(mode: 'light' | 'dark') {
+  themeState.mode = mode;
+  if (typeof document !== 'undefined') {
+    document.documentElement.classList.toggle('dark', mode === 'dark');
+  }
+  try {
+    localStorage.setItem('fs_theme', mode);
+  } catch {
+    // ignore storage errors
+  }
+}
+
+export function toggleTheme() {
+  applyTheme(themeState.mode === 'dark' ? 'light' : 'dark');
+}
+
+// Ensure DOM matches initial reactive state
+if (typeof window !== 'undefined') {
+  applyTheme(themeState.mode);
+}
+
+/* ==========================================================================
+   Toast Notifications (Sibling replacement for native alert / pulseSuccess)
+   ========================================================================== */
+export interface ToastItem {
+  id: number;
+  type: 'success' | 'error' | 'info';
+  message: string;
+}
+
+let nextToastId = 1;
+
+export const toastState = reactive<{
+  items: ToastItem[];
+}>({
+  items: []
+});
+
+export function dismissToast(id: number) {
+  const idx = toastState.items.findIndex(t => t.id === id);
+  if (idx !== -1) {
+    toastState.items.splice(idx, 1);
+  }
+}
+
+export function pushToast(type: ToastItem['type'], message: string, durationMs = 4800) {
+  const id = nextToastId++;
+  toastState.items.push({ id, type, message });
+  if (durationMs > 0 && typeof window !== 'undefined') {
+    window.setTimeout(() => dismissToast(id), durationMs);
+  }
+}
+
+export const notifySuccess = (message: string) => pushToast('success', message);
+export const notifyError = (message: string) => pushToast('error', message, 6500);
+export const notifyInfo = (message: string) => pushToast('info', message);
 
 export async function fetchApi<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers = new Headers(options.headers || {});

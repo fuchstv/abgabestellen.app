@@ -16,11 +16,15 @@ build/
 data/
 /data
 
-# Environment files
+# Environment & secret files
 .env
 .env.local
 .env.*.local
 !.env.example
+*.keystore
+*.jks
+*.pem
+*.key
 
 # Logs
 npm-debug.log*

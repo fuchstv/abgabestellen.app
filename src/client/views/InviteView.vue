@@ -1,147 +1,149 @@
 <template>
-  <div class="max-w-md mx-auto px-4 py-12 flex-1 w-full">
+  <div class="max-w-md mx-auto px-4 py-10 sm:py-12 flex-1 w-full">
     <!-- State: Loading -->
-    <div v-if="loading" class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center space-y-4">
-      <div class="w-10 h-10 border-4 border-amber-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-      <p class="text-xs text-slate-500 font-medium">Lade Einladungsdetails...</p>
+    <div v-if="loading" class="fs-container p-8 text-center space-y-4">
+      <div class="w-10 h-10 border-4 border-[#64ae24] border-t-transparent rounded-full animate-spin mx-auto"></div>
+      <p class="text-xs text-fs-muted font-medium">Lade Einladungsdetails...</p>
     </div>
 
     <!-- State: Success Completed -->
-    <div v-else-if="redeemSuccess" class="bg-white rounded-xl shadow-sm border border-emerald-200 p-8 text-center space-y-5">
-      <div class="w-14 h-14 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center text-2xl mx-auto font-bold shadow-inner">
-        ✓
+    <div v-else-if="redeemSuccess" class="fs-container border-fs-secondary-400 p-8 text-center space-y-5">
+      <div class="w-14 h-14 bg-fs-secondary-200 text-fs-secondary-800 rounded-full flex items-center justify-center mx-auto shadow-inner">
+        <CheckCircle2 class="w-8 h-8 text-[#64ae24]" />
       </div>
       <div>
-        <h2 class="text-xl font-black text-slate-900 tracking-tight">
+        <h2 class="font-headline text-xl text-fs-primary-600">
           Herzlich willkommen im Team!
         </h2>
-        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+        <p class="text-xs text-fs-text mt-2 leading-relaxed">
           Deine Einladung wurde erfolgreich eingelöst. Du hast nun vollen Zugriff auf die Pflege-Inbox und die regionalen Abgabestellen für
-          <strong class="text-slate-900">{{ inviteDetails?.region_name || 'deine Region' }}</strong>.
+          <strong class="text-fs-primary-900">{{ inviteDetails?.region_name || 'deine Region' }}</strong>.
         </p>
       </div>
 
       <div class="pt-2 flex flex-col gap-2">
-        <router-link 
-          to="/maintenance" 
-          class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs py-2.5 px-4 rounded-lg shadow-sm transition-colors block text-center"
-        >
-          → Weiter zur Pflege-Inbox
+        <router-link to="/maintenance" class="w-full fs-btn-primary !py-2.5">
+          <span>Weiter zur Pflege-Inbox</span>
+          <ArrowRight class="w-3.5 h-3.5" />
         </router-link>
-        <router-link 
-          to="/" 
-          class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs py-2 px-4 rounded-lg transition-colors block text-center"
-        >
+        <router-link to="/" class="w-full fs-btn-secondary !py-2">
           Zur Karte
         </router-link>
       </div>
     </div>
 
     <!-- State: Invalid / Expired / Error -->
-    <div v-else-if="errorMessage && !inviteDetails" class="bg-white rounded-xl shadow-sm border border-rose-200 p-8 text-center space-y-5">
-      <div class="w-14 h-14 bg-rose-100 text-rose-700 rounded-full flex items-center justify-center text-2xl mx-auto font-bold">
-        ✕
+    <div v-else-if="errorMessage && !inviteDetails" class="fs-container border-fs-danger-300 p-8 text-center space-y-5">
+      <div class="w-14 h-14 bg-fs-danger-200 text-fs-danger-800 rounded-full flex items-center justify-center mx-auto">
+        <AlertTriangle class="w-7 h-7 text-fs-danger-600" />
       </div>
       <div>
-        <h2 class="text-lg font-bold text-slate-900">
+        <h2 class="font-headline text-lg text-fs-primary-600">
           Einladungslink nicht gültig
         </h2>
-        <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+        <p class="text-xs text-fs-muted mt-2 leading-relaxed">
           {{ errorMessage }}
         </p>
       </div>
 
       <!-- Manual Input Fallback -->
-      <div class="pt-3 border-t border-slate-100 text-left space-y-2">
-        <label class="block text-xs font-medium text-slate-700">Anderen Einladungscode eingeben:</label>
+      <div class="pt-3 border-t border-fs-primary-200 text-left space-y-2">
+        <label class="block text-xs font-semibold text-fs-primary-800">
+          Anderen Einladungscode eingeben:
+        </label>
         <div class="flex gap-2">
-          <input 
-            v-model="manualTokenInput" 
-            type="text" 
-            placeholder="Token oder Link hier einfügen..." 
-            class="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-xs font-mono outline-none focus:border-amber-500" 
+          <input
+            v-model="manualTokenInput"
+            type="text"
+            placeholder="Token oder Link hier einfügen..."
+            class="flex-1 fs-input font-mono"
           />
-          <button 
-            @click="loadInviteByToken(manualTokenInput)" 
-            type="button" 
-            class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-3 py-2 rounded-lg"
+          <button
+            @click="loadInviteByToken(manualTokenInput)"
+            type="button"
+            class="fs-btn-primary"
           >
             Prüfen
           </button>
         </div>
       </div>
 
-      <div class="pt-2">
-        <router-link to="/" class="text-xs text-slate-500 hover:text-amber-600 font-medium">
+      <div class="pt-1">
+        <router-link to="/" class="text-xs text-fs-muted hover:text-fs-secondary-600 font-medium">
           Zurück zur Startseite
         </router-link>
       </div>
     </div>
 
     <!-- State: Valid Invite Form -->
-    <div v-else-if="inviteDetails" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-      <!-- Card Header -->
-      <div class="p-6 bg-gradient-to-br from-amber-500 to-amber-600 text-white text-center space-y-2">
-        <span class="inline-block px-2.5 py-0.5 rounded-full bg-white/20 text-white text-[10px] font-bold tracking-wider uppercase backdrop-blur-sm">
+    <div v-else-if="inviteDetails" class="fs-container overflow-hidden">
+      <!-- Warm Leaf-Green Header -->
+      <div class="p-6 bg-[#64ae24] text-white text-center space-y-2">
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/20 text-white text-[10px] font-bold tracking-wider uppercase">
+          <ShieldCheck class="w-3 h-3" />
           Regionalkoordination
         </span>
-        <h1 class="text-xl font-black tracking-tight">
+        <h1 class="font-headline text-xl tracking-normal text-white">
           Einladung zur AG Abgabestellen
         </h1>
-        <p class="text-xs text-amber-100 max-w-sm mx-auto">
+        <p class="text-xs text-white/90 max-w-sm mx-auto">
           Du wurdest eingeladen, die Abgabestellen der Region mitzubetreuen.
         </p>
       </div>
 
-      <div class="p-6 space-y-5">
+      <div class="p-6 space-y-5 bg-fs-surface">
         <!-- Region Badge & Role Details -->
-        <div class="bg-slate-50 border border-slate-200 rounded-lg p-3.5 space-y-2">
+        <div class="bg-fs-bg border border-fs-primary-200 rounded-fs p-3.5 space-y-2">
           <div class="flex items-center justify-between">
-            <span class="text-xs text-slate-500 font-medium">Zielregion:</span>
-            <span class="text-xs font-bold text-slate-900 bg-white border border-slate-200 px-2 py-0.5 rounded">
+            <span class="text-xs text-fs-muted font-medium">Zielregion:</span>
+            <span class="fs-badge-brown">
               {{ inviteDetails.region_name }}
             </span>
           </div>
           <div class="flex items-center justify-between">
-            <span class="text-xs text-slate-500 font-medium">Rolle:</span>
-            <span class="text-xs font-semibold text-amber-800 bg-amber-100 px-2 py-0.5 rounded">
+            <span class="text-xs text-fs-muted font-medium">Rolle:</span>
+            <span class="fs-badge-green">
               {{ formatRole(inviteDetails.role) }}
             </span>
           </div>
-          <p class="text-[11px] text-slate-500 pt-1 border-t border-slate-200/60 leading-normal">
+          <p class="text-[11px] text-fs-muted pt-1.5 border-t border-fs-primary-200 leading-normal">
             Ermöglicht Prüfung eingegangener Vorschläge, direkte Datenpflege im AG-Modus und Download von Tabellen-Backups.
           </p>
         </div>
 
         <!-- Form Option A: Already Logged In -->
         <div v-if="authState.user" class="space-y-4">
-          <div class="text-xs text-slate-700 bg-emerald-50 border border-emerald-200 rounded-lg p-3 space-y-1">
-            <div class="font-bold text-emerald-900 flex items-center gap-1.5">
-              <span>✓</span>
+          <div class="text-xs text-fs-secondary-900 bg-fs-secondary-100 border border-fs-secondary-300 rounded-fs p-3 space-y-1">
+            <div class="font-bold flex items-center gap-1.5">
+              <CheckCircle2 class="w-4 h-4 text-[#64ae24]" />
               <span>Aktuell angemeldet</span>
             </div>
-            <div class="text-slate-600">
+            <div class="text-fs-text">
               Konto: <strong>{{ authState.user.email }}</strong>
             </div>
           </div>
 
-          <div v-if="redeemError" class="p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-800 text-xs">
+          <div
+            v-if="redeemError"
+            class="p-3 bg-fs-danger-100 border border-fs-danger-300 rounded-fs text-fs-danger-900 text-xs"
+          >
             {{ redeemError }}
           </div>
 
-          <button 
-            @click="redeemAsLoggedInUser" 
-            :disabled="submitting" 
-            type="button" 
-            class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs py-2.5 px-4 rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+          <button
+            @click="redeemAsLoggedInUser"
+            :disabled="submitting"
+            type="button"
+            class="w-full fs-btn-primary !py-2.5"
           >
-            <span>{{ submitting ? 'Aktiviere Rolle...' : '✓ Einladung für mein Konto annehmen' }}</span>
+            <CheckCircle2 class="w-4 h-4" />
+            <span>{{ submitting ? 'Aktiviere Rolle...' : 'Einladung für mein Konto annehmen' }}</span>
           </button>
 
-          <button 
-            @click="logoutAndSwitch" 
-            type="button" 
-            class="w-full text-center text-xs text-slate-500 hover:text-slate-700 py-1"
+          <button
+            @click="logoutAndSwitch"
+            type="button"
+            class="w-full text-center text-xs text-fs-muted hover:text-fs-text py-1 cursor-pointer"
           >
             Mit einer anderen E-Mail-Adresse annehmen
           </button>
@@ -150,41 +152,45 @@
         <!-- Form Option B: Not Logged In / New User -->
         <form v-else @submit.prevent="redeemAndRegister" class="space-y-3.5 text-xs">
           <div>
-            <label class="block font-semibold text-slate-700 mb-1">Deine E-Mail-Adresse *</label>
-            <input 
-              v-model="email" 
-              type="email" 
-              required 
-              placeholder="dein.name@foodsharing.network" 
-              class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none"
+            <label class="block font-semibold text-fs-primary-800 mb-1">Deine E-Mail-Adresse *</label>
+            <input
+              v-model="email"
+              type="email"
+              required
+              placeholder="dein.name@foodsharing.network"
+              class="fs-input"
             />
           </div>
 
           <div>
-            <label class="block font-semibold text-slate-700 mb-1">
-              Passwort vergeben * <span class="font-normal text-slate-400">(für zukünftige Logins)</span>
+            <label class="block font-semibold text-fs-primary-800 mb-1">
+              Passwort vergeben * <span class="font-normal text-fs-muted">(für zukünftige Logins)</span>
             </label>
-            <input 
-              v-model="password" 
-              type="password" 
-              required 
-              minlength="6" 
-              placeholder="Mindestens 6 Zeichen" 
-              class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none"
+            <input
+              v-model="password"
+              type="password"
+              required
+              minlength="6"
+              placeholder="Mindestens 6 Zeichen"
+              class="fs-input"
             />
           </div>
 
-          <div v-if="redeemError" class="p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-800 text-xs">
+          <div
+            v-if="redeemError"
+            class="p-3 bg-fs-danger-100 border border-fs-danger-300 rounded-fs text-fs-danger-900 text-xs"
+          >
             {{ redeemError }}
           </div>
 
           <div class="pt-2">
-            <button 
-              type="submit" 
-              :disabled="submitting" 
-              class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs py-2.5 px-4 rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+            <button
+              type="submit"
+              :disabled="submitting"
+              class="w-full fs-btn-primary !py-2.5"
             >
-              <span>{{ submitting ? 'Aktiviere Zugang...' : '✓ Einladung annehmen & Zugang aktivieren' }}</span>
+              <CheckCircle2 class="w-4 h-4" />
+              <span>{{ submitting ? 'Aktiviere Zugang...' : 'Einladung annehmen & Zugang aktivieren' }}</span>
             </button>
           </div>
         </form>
@@ -196,6 +202,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { CheckCircle2, ArrowRight, AlertTriangle, ShieldCheck } from 'lucide-vue-next';
 import { authState, setAuthUser, fetchApi } from '../state';
 
 interface InviteDetails {
@@ -223,14 +230,8 @@ const redeemSuccess = ref(false);
 function cleanToken(input: string): string {
   if (!input) return '';
   const trimmed = input.trim();
-  if (trimmed.includes('token=')) {
-    const m = trimmed.match(/token=([a-fA-F0-9]+)/);
-    if (m) return m[1];
-  }
-  if (trimmed.includes('/invite/')) {
-    const m = trimmed.match(/\/invite\/([a-fA-F0-9]+)/);
-    if (m) return m[1];
-  }
+  const match = trimmed.match(/(?:token=|\/invite\/)([a-fA-F0-9]+)/);
+  if (match) return match[1];
   return trimmed;
 }
 

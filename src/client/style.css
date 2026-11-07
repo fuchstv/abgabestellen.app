@@ -2,8 +2,310 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+/* ==========================================================================
+   Self-Hosted Typography (SIL Open Font License — Zero External CDN)
+   ========================================================================== */
+@font-face {
+  font-family: 'HeadlineFont';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/alfa-slab-one-regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'BodyFont';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/poppins-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'BodyFont';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/poppins-400-italic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'BodyFont';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('./assets/fonts/poppins-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'BodyFont';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./assets/fonts/poppins-600.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'BodyFont';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./assets/fonts/poppins-700.woff2') format('woff2');
+}
+
+/* ==========================================================================
+   Design Tokens — Clean-Room Sibling Theme (Light & Dark)
+   ========================================================================== */
+:root {
+  color-scheme: light;
+
+  /* Earth Brown (#533a20) */
+  --fs-primary-100: 246 245 244;
+  --fs-primary-200: 221 216 210;
+  --fs-primary-300: 195 186 177;
+  --fs-primary-400: 169 157 144;
+  --fs-primary-500: 83 58 32;
+  --fs-primary-600: 66 46 26;
+  --fs-primary-700: 50 35 19;
+  --fs-primary-800: 33 23 13;
+  --fs-primary-900: 17 12 6;
+
+  /* Leaf Green (#64ae24) */
+  --fs-secondary-100: 247 251 244;
+  --fs-secondary-200: 224 239 211;
+  --fs-secondary-300: 201 227 178;
+  --fs-secondary-400: 178 215 146;
+  --fs-secondary-500: 100 174 36;
+  --fs-secondary-600: 80 139 29;
+  --fs-secondary-700: 60 104 22;
+  --fs-secondary-800: 40 70 14;
+  --fs-secondary-900: 20 35 7;
+
+  /* Neutral Warm Gray (#5e636e) */
+  --fs-gray-100: 247 247 248;
+  --fs-gray-200: 223 224 226;
+  --fs-gray-300: 199 200 204;
+  --fs-gray-400: 175 177 183;
+  --fs-gray-500: 94 99 110;
+  --fs-gray-600: 75 79 88;
+  --fs-gray-700: 56 59 66;
+  --fs-gray-800: 38 40 44;
+  --fs-gray-900: 19 20 22;
+
+  /* Golden Ochre (#cc990e) */
+  --fs-warning-100: 252 250 243;
+  --fs-warning-200: 245 235 207;
+  --fs-warning-300: 237 219 171;
+  --fs-warning-400: 230 204 135;
+  --fs-warning-500: 204 153 14;
+  --fs-warning-600: 163 122 11;
+  --fs-warning-700: 122 92 8;
+  --fs-warning-800: 82 61 6;
+  --fs-warning-900: 41 31 3;
+
+  /* Brick Red (#cf3a00) */
+  --fs-danger-100: 253 245 242;
+  --fs-danger-200: 245 216 204;
+  --fs-danger-300: 238 186 166;
+  --fs-danger-400: 231 157 128;
+  --fs-danger-500: 207 58 0;
+  --fs-danger-600: 166 46 0;
+  --fs-danger-700: 124 35 0;
+  --fs-danger-800: 83 23 0;
+  --fs-danger-900: 41 12 0;
+
+  /* Region Info Blue (#006bcf) */
+  --fs-info-100: 242 248 253;
+  --fs-info-200: 204 225 245;
+  --fs-info-300: 166 203 238;
+  --fs-info-400: 128 181 231;
+  --fs-info-500: 0 107 207;
+  --fs-info-600: 0 86 166;
+  --fs-info-700: 0 64 124;
+  --fs-info-800: 0 43 83;
+  --fs-info-900: 0 21 41;
+
+  /* Surfaces, Borders & Shadows */
+  --fs-bg: 244 249 239;
+  --fs-surface: 255 255 255;
+  --fs-elevated: 242 243 241;
+  --fs-text: 56 59 66;
+  --fs-muted: 94 99 110;
+  --fs-border: 221 216 210;
+
+  --fs-shadow: 0px 1.2px 5.3px rgba(0, 0, 0, 0.061),
+               0px 4px 17.9px rgba(0, 0, 0, 0.089),
+               0px 18px 80px rgba(0, 0, 0, 0.12);
+  --fs-shadow-card: 0 1px 3px rgba(83, 58, 32, 0.08),
+                    0 4px 12px rgba(83, 58, 32, 0.05);
+}
+
+html.dark {
+  color-scheme: dark;
+
+  /* Warm Sand (#d1c0a8) */
+  --fs-primary-100: 24 22 19;
+  --fs-primary-200: 42 38 34;
+  --fs-primary-300: 66 59 51;
+  --fs-primary-400: 105 96 84;
+  --fs-primary-500: 209 192 168;
+  --fs-primary-600: 218 205 185;
+  --fs-primary-700: 227 217 203;
+  --fs-primary-800: 237 230 220;
+  --fs-primary-900: 246 242 238;
+
+  /* Forest Leaf Green (#4b8f1c) */
+  --fs-secondary-100: 17 26 13;
+  --fs-secondary-200: 25 43 15;
+  --fs-secondary-300: 36 62 20;
+  --fs-secondary-400: 52 90 26;
+  --fs-secondary-500: 92 164 38;
+  --fs-secondary-600: 111 178 60;
+  --fs-secondary-700: 147 198 110;
+  --fs-secondary-800: 196 226 172;
+  --fs-secondary-900: 226 240 216;
+
+  /* Dark Neutral Gray */
+  --fs-gray-100: 24 26 24;
+  --fs-gray-200: 36 39 36;
+  --fs-gray-300: 59 63 59;
+  --fs-gray-400: 92 97 92;
+  --fs-gray-500: 168 173 168;
+  --fs-gray-600: 190 195 190;
+  --fs-gray-700: 212 216 212;
+  --fs-gray-800: 230 233 230;
+  --fs-gray-900: 244 246 244;
+
+  /* Dark Golden Ochre */
+  --fs-warning-100: 28 23 8;
+  --fs-warning-200: 52 41 10;
+  --fs-warning-300: 86 68 12;
+  --fs-warning-400: 123 98 14;
+  --fs-warning-500: 245 195 13;
+  --fs-warning-600: 247 207 61;
+  --fs-warning-700: 249 219 110;
+  --fs-warning-800: 251 231 158;
+  --fs-warning-900: 253 243 207;
+
+  /* Dark Brick Red */
+  --fs-danger-100: 30 14 11;
+  --fs-danger-200: 56 22 15;
+  --fs-danger-300: 89 32 20;
+  --fs-danger-400: 128 45 28;
+  --fs-danger-500: 255 92 56;
+  --fs-danger-600: 255 119 92;
+  --fs-danger-700: 255 153 133;
+  --fs-danger-800: 255 196 184;
+  --fs-danger-900: 255 224 218;
+
+  /* Dark Info Blue */
+  --fs-info-100: 10 22 34;
+  --fs-info-200: 14 38 62;
+  --fs-info-300: 20 58 94;
+  --fs-info-400: 28 84 134;
+  --fs-info-500: 38 164 255;
+  --fs-info-600: 68 182 255;
+  --fs-info-700: 112 201 255;
+  --fs-info-800: 172 224 255;
+  --fs-info-900: 214 240 255;
+
+  /* Dark Surfaces & Shadows */
+  --fs-bg: 17 21 16;
+  --fs-surface: 25 30 24;
+  --fs-elevated: 33 39 31;
+  --fs-text: 224 226 221;
+  --fs-muted: 164 170 160;
+  --fs-border: 58 53 46;
+
+  --fs-shadow: 0px 1.2px 5.3px rgba(0, 0, 0, 0.35),
+               0px 4px 17.9px rgba(0, 0, 0, 0.45),
+               0px 18px 80px rgba(0, 0, 0, 0.55);
+  --fs-shadow-card: 0 2px 6px rgba(0, 0, 0, 0.35),
+                    0 8px 20px rgba(0, 0, 0, 0.28);
+}
+
+@layer base {
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'BodyFont', system-ui, -apple-system, sans-serif;
+    background-color: rgb(var(--fs-bg));
+    color: rgb(var(--fs-text));
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-headline {
+    font-family: 'HeadlineFont', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
+}
+
+/* ==========================================================================
+   Reusable Sibling UI Primitives
+   ========================================================================== */
+@layer components {
+  .fs-container {
+    @apply bg-fs-surface border border-fs-primary-200 rounded-fs shadow-fs-card overflow-hidden;
+  }
+
+  .fs-container-header {
+    @apply bg-fs-primary-200/85 border-b border-fs-primary-300/70 px-4 py-2.5 flex items-center justify-between gap-3 text-fs-primary-900;
+  }
+
+  .fs-btn-primary {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-fs bg-[#64ae24] hover:bg-[#508b1d] active:bg-[#3c6816] text-white font-semibold px-3.5 py-2 text-xs shadow-sm transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .fs-btn-secondary {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-fs bg-fs-primary-100 hover:bg-fs-primary-200 border border-fs-primary-300 text-fs-primary-800 font-semibold px-3.5 py-2 text-xs transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .fs-btn-danger {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-fs bg-[#cf3a00] hover:bg-[#a62e00] text-white font-semibold px-3.5 py-2 text-xs shadow-sm transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .fs-input {
+    @apply w-full rounded-fs border border-fs-primary-300 bg-fs-bg focus:bg-fs-surface text-fs-text placeholder:text-fs-muted/75 px-3 py-2 text-xs outline-none focus:border-fs-secondary-500 focus:ring-2 focus:ring-fs-secondary-500/25 transition-colors;
+  }
+
+  .fs-badge-green {
+    @apply inline-flex items-center gap-1 rounded-fs bg-fs-secondary-200 text-fs-secondary-800 border border-fs-secondary-300/80 px-2 py-0.5 text-[11px] font-semibold;
+  }
+
+  .fs-badge-ochre {
+    @apply inline-flex items-center gap-1 rounded-fs bg-fs-warning-200 text-fs-warning-800 border border-fs-warning-300/80 px-2 py-0.5 text-[11px] font-semibold;
+  }
+
+  .fs-badge-brown {
+    @apply inline-flex items-center gap-1 rounded-fs bg-fs-primary-200 text-fs-primary-800 border border-fs-primary-300/80 px-2 py-0.5 text-[11px] font-semibold;
+  }
+
+  .fs-badge-red {
+    @apply inline-flex items-center gap-1 rounded-fs bg-fs-danger-200 text-fs-danger-800 border border-fs-danger-300/80 px-2 py-0.5 text-[11px] font-semibold;
+  }
+
+  .fs-badge-gray {
+    @apply inline-flex items-center gap-1 rounded-fs bg-fs-gray-200 text-fs-gray-700 border border-fs-gray-300/80 px-2 py-0.5 text-[11px] font-semibold;
+  }
+}
+
+/* Custom subtle scrollbars matching earthy palette */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--fs-primary-400), 0.45);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--fs-primary-500), 0.65);
 }

@@ -1,51 +1,70 @@
 <template>
-  <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
-    <!-- Confidentiality banner -->
-    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+  <div class="space-y-5">
+    <!-- Confidentiality Alert (foodsharing alert-warning style) -->
+    <div class="bg-fs-warning-200 border border-fs-warning-300 border-l-4 border-l-fs-warning-500 p-4 rounded-fs">
       <div class="flex items-start gap-3">
-        <span class="text-amber-600 text-lg">🔒</span>
+        <Lock class="w-5 h-5 text-fs-warning-700 shrink-0 mt-0.5" />
         <div>
-          <h4 class="text-sm font-bold text-amber-900">
+          <h4 class="text-sm font-bold text-fs-warning-900">
             Streng vertraulicher interner Bereich (AG Abgabestellen)
           </h4>
-          <p class="text-xs text-amber-800 mt-0.5">
-            Diese Kontaktdaten und Protokolle sind ausschließlich für autorisierte Manager sichtbar und werden niemals öffentlich angezeigt.
+          <p class="text-xs text-fs-warning-800 mt-0.5 leading-relaxed">
+            Diese Kontaktdaten und Protokolle sind ausschließlich für autorisierte Koordinator:innen sichtbar und werden niemals öffentlich angezeigt.
           </p>
         </div>
       </div>
     </div>
 
-    <!-- Internal contact info card -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
-      <div>
-        <div class="text-xs font-semibold text-slate-500 uppercase">Interner Ansprechpartner</div>
-        <div class="text-base font-bold text-slate-900 mt-1">
-          {{ internalStore.ansprechpartner || '— Keine interne Ansprechperson hinterlegt —' }}
+    <!-- Internal Contacts Container -->
+    <FsContainer title="Vertrauliche Direktkontakte" body-class="p-4 sm:p-5">
+      <template #icon>
+        <UserCheck class="w-4 h-4 text-fs-primary-700" />
+      </template>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-fs-bg border border-fs-primary-200 rounded-fs p-3.5">
+          <div class="text-[11px] font-semibold text-fs-muted uppercase tracking-wide">
+            Interner Ansprechpartner
+          </div>
+          <div class="text-sm font-bold text-fs-primary-900 mt-1">
+            {{ internalStore.ansprechpartner || '— Keine interne Ansprechperson hinterlegt —' }}
+          </div>
+        </div>
+        <div class="bg-fs-bg border border-fs-primary-200 rounded-fs p-3.5">
+          <div class="text-[11px] font-semibold text-fs-muted uppercase tracking-wide">
+            Interne Telefonnummer / Direktwahl
+          </div>
+          <div class="text-sm font-bold text-fs-primary-900 mt-1">
+            <a
+              v-if="internalStore.telefon"
+              :href="'tel:' + internalStore.telefon"
+              class="text-fs-secondary-700 hover:text-fs-secondary-800 inline-flex items-center gap-1.5 hover:underline"
+            >
+              <Phone class="w-3.5 h-3.5 text-fs-secondary-600" />
+              <span>{{ internalStore.telefon }}</span>
+            </a>
+            <span v-else class="text-fs-muted font-normal">— Keine interne Durchwahl hinterlegt —</span>
+          </div>
         </div>
       </div>
-      <div>
-        <div class="text-xs font-semibold text-slate-500 uppercase">Interne Telefonnummer / Direktwahl</div>
-        <div class="text-base font-bold text-slate-900 mt-1">
-          <a v-if="internalStore.telefon" :href="'tel:' + internalStore.telefon" class="text-amber-700 hover:underline">
-            {{ internalStore.telefon }}
-          </a>
-          <span v-else class="text-slate-400 font-normal">— Keine interne Durchwahl hinterlegt —</span>
-        </div>
-      </div>
-    </div>
+    </FsContainer>
 
-    <!-- Quick add log form -->
-    <div class="bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
-      <h4 class="text-sm font-bold text-slate-900 mb-3 flex items-center justify-between">
-        <span>Neuen Kontaktversuch / Verifizierung erfassen</span>
-        <span class="text-xs font-normal text-slate-500">Aktualisiert automatisch „Zuletzt kontaktiert“</span>
-      </h4>
+    <!-- Add New Contact Verification Entry -->
+    <FsContainer title="Neuen Kontaktversuch / Verifizierung erfassen" body-class="p-4 sm:p-5">
+      <template #icon>
+        <MessageSquarePlus class="w-4 h-4 text-fs-secondary-600" />
+      </template>
+      <template #actions>
+        <span class="hidden sm:inline text-[11px] text-fs-primary-800">
+          Aktualisiert automatisch „Zuletzt kontaktiert“
+        </span>
+      </template>
 
-      <form @submit.prevent="submitLog" class="space-y-3">
+      <form @submit.prevent="submitLog" class="space-y-3.5">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-medium text-slate-700 mb-1">Kanal</label>
-            <select v-model="form.channel" class="w-full text-xs rounded border border-slate-300 p-2 bg-white">
+            <label class="block text-xs font-semibold text-fs-primary-800 mb-1">Kanal</label>
+            <select v-model="form.channel" class="fs-input">
               <option value="Telefon">Telefon</option>
               <option value="E-Mail">E-Mail</option>
               <option value="Vor Ort">Vor Ort</option>
@@ -54,96 +73,114 @@
             </select>
           </div>
           <div>
-            <label class="block text-xs font-medium text-slate-700 mb-1">Gesprochen mit (Person / Rolle)</label>
-            <input 
-              v-model="form.contact_person" 
-              type="text" 
-              placeholder="z.B. Frau Schmidt (Küchenleitung)" 
-              class="w-full text-xs rounded border border-slate-300 p-2"
+            <label class="block text-xs font-semibold text-fs-primary-800 mb-1">
+              Gesprochen mit (Person / Rolle)
+            </label>
+            <input
+              v-model="form.contact_person"
+              type="text"
+              placeholder="z.B. Frau Schmidt (Küchenleitung)"
+              class="fs-input"
             />
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-slate-700 mb-1">Gesprächsnotiz / Vereinbarungen (erforderlich)</label>
-          <textarea 
-            v-model="form.note" 
-            required 
-            rows="3" 
-            placeholder="z.B. Frau Schmidt hat telefonisch bestätigt, dass Mo-Fr bis 14 Uhr abgegeben werden kann. Keine Schokolade im Sommer."
-            class="w-full text-xs rounded border border-slate-300 p-2"
+          <label class="block text-xs font-semibold text-fs-primary-800 mb-1">
+            Gesprächsnotiz / Vereinbarungen *
+          </label>
+          <textarea
+            v-model="form.note"
+            required
+            rows="3"
+            placeholder="z.B. Telefonisch bestätigt, dass Mo–Fr bis 14 Uhr abgegeben werden kann. Keine Kühlware am Wochenende."
+            class="fs-input"
           ></textarea>
         </div>
 
-        <div class="flex items-center gap-2 pt-1">
-          <input 
-            v-model="form.confirmed_current" 
-            id="confirmedCurrent" 
-            type="checkbox" 
-            class="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+        <div class="flex items-center gap-2 pt-0.5">
+          <input
+            v-model="form.confirmed_current"
+            id="confirmedCurrent"
+            type="checkbox"
+            class="rounded border-fs-primary-300 text-[#64ae24] focus:ring-[#64ae24]"
           />
-          <label for="confirmedCurrent" class="text-xs text-slate-800 font-medium cursor-pointer">
+          <label for="confirmedCurrent" class="text-xs text-fs-text font-medium cursor-pointer">
             Informationen wurden als aktuell bestätigt (setzt Status auf „Aktuell“)
           </label>
         </div>
 
-        <div class="pt-2 flex justify-end">
-          <button 
-            type="submit" 
-            :disabled="submitting" 
-            class="bg-amber-600 hover:bg-amber-700 text-white font-medium py-1.5 px-4 rounded text-xs transition-colors disabled:opacity-50"
+        <div class="pt-1 flex justify-end">
+          <button
+            type="submit"
+            :disabled="submitting"
+            class="fs-btn-primary"
           >
-            {{ submitting ? 'Speichert...' : 'Protokoll speichern' }}
+            <CheckCircle2 class="w-3.5 h-3.5" />
+            <span>{{ submitting ? 'Speichert...' : 'Protokoll speichern' }}</span>
           </button>
         </div>
       </form>
-    </div>
+    </FsContainer>
 
-    <!-- Chronological contact log history -->
-    <div>
-      <h4 class="text-sm font-bold text-slate-900 mb-3">
-        Bisherige Kontaktprotokolle ({{ logs.length }})
-      </h4>
+    <!-- Chronological Contact Log History -->
+    <FsContainer :title="`Bisherige Kontaktprotokolle (${logs.length})`" body-class="p-4 sm:p-5">
+      <template #icon>
+        <History class="w-4 h-4 text-fs-primary-700" />
+      </template>
 
-      <div v-if="logs.length === 0" class="text-xs text-slate-500 italic p-4 text-center bg-slate-50 rounded-lg">
+      <div
+        v-if="logs.length === 0"
+        class="text-xs text-fs-muted italic p-5 text-center bg-fs-bg border border-fs-primary-200 rounded-fs"
+      >
         Bislang liegen keine Kontaktprotokolle für diese Abgabestelle vor.
       </div>
 
       <div v-else class="space-y-3">
-        <div 
-          v-for="entry in logs" 
-          :key="entry.id" 
-          class="border border-slate-200 rounded-lg p-3.5 text-xs bg-slate-50/50 space-y-1.5"
+        <div
+          v-for="entry in logs"
+          :key="entry.id"
+          class="border border-fs-primary-200 rounded-fs p-3.5 text-xs bg-fs-bg/70 space-y-2"
         >
-          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-1.5">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-slate-800 px-2 py-0.5 rounded bg-slate-200 text-[11px]">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-fs-primary-200 pb-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="fs-badge-brown">
                 {{ entry.channel }}
               </span>
-              <span v-if="entry.contact_person" class="font-medium text-slate-700">
+              <span v-if="entry.contact_person" class="font-semibold text-fs-primary-900">
                 mit {{ entry.contact_person }}
               </span>
-              <span v-if="entry.confirmed_current === 1" class="text-emerald-700 bg-emerald-100 font-semibold px-2 py-0.5 rounded text-[10px]">
-                ✓ Als aktuell bestätigt
+              <span v-if="entry.confirmed_current === 1" class="fs-badge-green !text-[10px]">
+                <CheckCircle2 class="w-3 h-3" />
+                Als aktuell bestätigt
               </span>
             </div>
-            <div class="text-slate-500 text-[11px]">
-              {{ formatDate(entry.contacted_at) }} durch {{ entry.author_name || 'Manager' }}
+            <div class="text-fs-muted text-[11px]">
+              {{ formatDate(entry.contacted_at) }} · {{ entry.author_name || 'Koordination' }}
             </div>
           </div>
-          <p class="text-slate-800 whitespace-pre-line leading-relaxed">
+          <p class="text-fs-text whitespace-pre-line leading-relaxed">
             {{ entry.note }}
           </p>
         </div>
       </div>
-    </div>
+    </FsContainer>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
+import {
+  Lock,
+  UserCheck,
+  Phone,
+  MessageSquarePlus,
+  CheckCircle2,
+  History
+} from 'lucide-vue-next';
 import { InternalStore, ContactLogEntry } from '@shared/types';
-import { fetchApi } from '../state';
+import { fetchApi, notifySuccess, notifyError } from '../state';
+import FsContainer from './FsContainer.vue';
 
 const props = defineProps<{
   internalStore: InternalStore;
@@ -191,9 +228,10 @@ async function submitLog() {
     });
     form.note = '';
     form.contact_person = '';
+    notifySuccess('Kontaktprotokoll wurde erfolgreich gespeichert.');
     emit('logAdded');
   } catch (err: any) {
-    alert(err.message || 'Fehler beim Speichern');
+    notifyError(err.message || 'Fehler beim Speichern des Kontaktprotokolls');
   } finally {
     submitting.value = false;
   }
