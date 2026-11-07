@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { appState, authState, fetchApi } from './state';
+import { appState, authState, fetchApi, refreshAuthProfile } from './state';
 import { Region } from '@shared/types';
 import Navbar from './components/Navbar.vue';
 import LegalFooter from './components/LegalFooter.vue';
@@ -48,8 +48,11 @@ async function initRegions() {
     if (regions.length > 0 && !appState.currentRegion) {
       appState.currentRegion = regions[0];
     }
+    if (authState.token) {
+      await refreshAuthProfile();
+    }
     if (authState.user && appState.currentRegion) {
-      fetchApi<any[]>(`/api/regions/${appState.currentRegion.id}/suggestions?status=pending`)
+      fetchApi<any[]>(`/api/maintenance/suggestions?status=pending&region_id=${appState.currentRegion.id}&auto_scope=1`)
         .then(s => {
           appState.pendingSuggestionsCount = s.length;
         })

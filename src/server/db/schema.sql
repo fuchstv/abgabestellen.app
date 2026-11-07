@@ -97,7 +97,21 @@ CREATE TABLE IF NOT EXISTS `fs_store_contact_log` (
 );
 CREATE INDEX IF NOT EXISTS `idx_fs_contact_store` ON `fs_store_contact_log`(`store_id`, `contacted_at`);
 
--- 7. USER REGION ROLES (fs_user_roles)
+-- 7. COORDINATOR / ADMIN USERS (fs_user)
+CREATE TABLE IF NOT EXISTS `fs_user` (
+  `id` TEXT PRIMARY KEY,
+  `email` TEXT NOT NULL UNIQUE,
+  `name` TEXT NOT NULL DEFAULT '',
+  `password_hash` TEXT NULL,
+  `is_super_admin` INTEGER NOT NULL DEFAULT 0,
+  `is_active` INTEGER NOT NULL DEFAULT 1,
+  `revoked_at` TEXT NULL DEFAULT NULL,
+  `last_login_at` TEXT NULL DEFAULT NULL,
+  `created_at` TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS `idx_fs_user_email` ON `fs_user`(`email`);
+
+-- 7b. USER REGION ROLES (fs_user_roles)
 CREATE TABLE IF NOT EXISTS `fs_user_roles` (
   `user_id` TEXT NOT NULL,
   `region_id` INTEGER NOT NULL REFERENCES `fs_bezirk`(`id`) ON DELETE CASCADE,
@@ -111,12 +125,13 @@ CREATE INDEX IF NOT EXISTS `idx_fs_user_roles_user` ON `fs_user_roles`(`user_id`
 CREATE TABLE IF NOT EXISTS `fs_invite_token` (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT,
   `token_hash` TEXT NOT NULL UNIQUE,
-  `region_id` INTEGER NOT NULL REFERENCES `fs_bezirk`(`id`),
+  `region_id` INTEGER NOT NULL REFERENCES `fs_bezirk`(`id`) ON DELETE CASCADE,
   `target_role` TEXT NOT NULL DEFAULT 'WORKGROUP_GIVING_STORES',
   `created_by_user_id` TEXT NOT NULL,
   `redeemed_by_user_id` TEXT NULL,
   `expires_at` TEXT NOT NULL,
   `redeemed_at` TEXT NULL,
+  `revoked_at` TEXT NULL DEFAULT NULL,
   `created_at` TEXT NOT NULL DEFAULT (datetime('now'))
 );
 

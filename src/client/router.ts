@@ -13,6 +13,7 @@ export const router = createRouter({
     { path: '/regions/:regionId', component: MapView },
     { path: '/stores/:storeId', component: StoreDetailPage },
     { path: '/maintenance', component: MaintenanceInboxView },
+    { path: '/maintenance/team', component: MaintenanceInboxView },
     { path: '/invite/:token?', component: InviteView },
     { path: '/privacy', component: PrivacyPolicyView },
     { path: '/imprint', component: ImprintView }

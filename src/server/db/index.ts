@@ -40,6 +40,48 @@ export function getDatabase(dbPath?: string): DatabaseType {
   return db;
 }
 
+export function ensureMigrations(db: DatabaseType): void {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS fs_user (
+      id TEXT PRIMARY KEY,
+      email TEXT NOT NULL UNIQUE,
+      name TEXT NOT NULL DEFAULT '',
+      password_hash TEXT NULL,
+      is_super_admin INTEGER NOT NULL DEFAULT 0,
+      is_active INTEGER NOT NULL DEFAULT 1,
+      revoked_at TEXT NULL DEFAULT NULL,
+      last_login_at TEXT NULL DEFAULT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE INDEX IF NOT EXISTS idx_fs_user_email ON fs_user(email);
+  `);
+
+  const userCols = new Set(
+    (db.prepare(`PRAGMA table_info('fs_user')`).all() as Array<{ name: string }>).map(c => c.name)
+  );
+  if (!userCols.has('is_active')) {
+    db.exec(`ALTER TABLE fs_user ADD COLUMN is_active INTEGER NOT NULL DEFAULT 1;`);
+  }
+  if (!userCols.has('revoked_at')) {
+    db.exec(`ALTER TABLE fs_user ADD COLUMN revoked_at TEXT NULL DEFAULT NULL;`);
+  }
+  if (!userCols.has('last_login_at')) {
+    db.exec(`ALTER TABLE fs_user ADD COLUMN last_login_at TEXT NULL DEFAULT NULL;`);
+  }
+
+  const inviteTableExists = db
+    .prepare(`SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'fs_invite_token'`)
+    .get();
+  if (inviteTableExists) {
+    const inviteCols = new Set(
+      (db.prepare(`PRAGMA table_info('fs_invite_token')`).all() as Array<{ name: string }>).map(c => c.name)
+    );
+    if (!inviteCols.has('revoked_at')) {
+      db.exec(`ALTER TABLE fs_invite_token ADD COLUMN revoked_at TEXT NULL DEFAULT NULL;`);
+    }
+  }
+}
+
 export function initSchema(db: DatabaseType): void {
   const possiblePaths = [
     path.resolve(__dirname, 'schema.sql'),
@@ -52,9 +94,11 @@ export function initSchema(db: DatabaseType): void {
     if (fs.existsSync(p)) {
       const schemaSql = fs.readFileSync(p, 'utf8');
       db.exec(schemaSql);
+      ensureMigrations(db);
       return;
     }
   }
+  ensureMigrations(db);
 }
 
 export function closeDatabase(): void {

@@ -4,7 +4,7 @@ import { SuggestionModel } from '../db/models/suggestions';
 import { StoreModel } from '../db/models/stores';
 import { RegionModel } from '../db/models/regions';
 import { PermissionService } from '../auth/permissions';
-import { requireAuthMiddleware } from '../auth/authMiddleware';
+import { optionalAuthMiddleware, requireAuthMiddleware } from '../auth/authMiddleware';
 import { GivingStoreSuggestionPayload, SuggestionStatus } from '@shared/types';
 import { notifyNewSuggestion } from '../services/notificationService';
 
@@ -14,9 +14,9 @@ export async function suggestionRoutes(fastify: FastifyInstance, options: { db: 
   const regionModel = new RegionModel(options.db);
   const permissionService = new PermissionService(options.db);
 
-  // POST /api/giving-stores/:id/suggestions (Change report on existing store)
+  // POST /api/giving-stores/:id/suggestions (Change report on existing store - public or logged-in)
   fastify.post('/api/giving-stores/:id/suggestions', {
-    preHandler: requireAuthMiddleware
+    preHandler: optionalAuthMiddleware
   }, async (request, reply) => {
     const { id } = request.params as { id: string };
     const storeId = Number(id);
@@ -29,17 +29,24 @@ export async function suggestionRoutes(fastify: FastifyInstance, options: { db: 
     const body = request.body as {
       payload: GivingStoreSuggestionPayload;
       author_note?: string;
+      author_email?: string;
     };
 
     if (!body.payload) {
       return reply.status(400).send({ error: 'Payload ist erforderlich' });
     }
 
+    const resolvedEmail = (request.user?.email || body.author_email || '').trim();
+    if (!request.user && !resolvedEmail) {
+      return reply.status(400).send({ error: 'Bitte gib deine E-Mail-Adresse für eventuelle Rückfragen an' });
+    }
+    const resolvedUid = request.user?.uid || `anon_${Date.now()}`;
+
     const suggestion = suggestionModel.createSuggestion({
       region_id: store.bezirk_id,
       store_id: store.id,
-      author_user_id: request.user!.uid,
-      author_email: request.user!.email,
+      author_user_id: resolvedUid,
+      author_email: resolvedEmail,
       payload: body.payload,
       author_note: body.author_note
     });
@@ -48,7 +55,7 @@ export async function suggestionRoutes(fastify: FastifyInstance, options: { db: 
     notifyNewSuggestion({
       regionName: region?.name || 'Region ' + store.bezirk_id,
       storeName: store.name,
-      authorEmail: request.user!.email,
+      authorEmail: resolvedEmail,
       authorNote: body.author_note,
       payload: body.payload,
       logger: request.log
@@ -60,9 +67,9 @@ export async function suggestionRoutes(fastify: FastifyInstance, options: { db: 
     });
   });
 
-  // POST /api/regions/:id/suggestions (Propose new drop-off store)
+  // POST /api/regions/:id/suggestions (Propose new drop-off store - public or logged-in)
   fastify.post('/api/regions/:id/suggestions', {
-    preHandler: requireAuthMiddleware
+    preHandler: optionalAuthMiddleware
   }, async (request, reply) => {
     const { id } = request.params as { id: string };
     const regionId = Number(id);
@@ -75,17 +82,24 @@ export async function suggestionRoutes(fastify: FastifyInstance, options: { db: 
     const body = request.body as {
       payload: GivingStoreSuggestionPayload;
       author_note?: string;
+      author_email?: string;
     };
 
     if (!body.payload || !body.payload.name) {
       return reply.status(400).send({ error: 'Name der Abgabestelle ist erforderlich' });
     }
 
+    const resolvedEmail = (request.user?.email || body.author_email || '').trim();
+    if (!request.user && !resolvedEmail) {
+      return reply.status(400).send({ error: 'Bitte gib deine E-Mail-Adresse für eventuelle Rückfragen an' });
+    }
+    const resolvedUid = request.user?.uid || `anon_${Date.now()}`;
+
     const suggestion = suggestionModel.createSuggestion({
       region_id: regionId,
       store_id: null,
-      author_user_id: request.user!.uid,
-      author_email: request.user!.email,
+      author_user_id: resolvedUid,
+      author_email: resolvedEmail,
       payload: body.payload,
       author_note: body.author_note
     });
@@ -93,7 +107,7 @@ export async function suggestionRoutes(fastify: FastifyInstance, options: { db: 
     notifyNewSuggestion({
       regionName: region.name,
       storeName: body.payload.name,
-      authorEmail: request.user!.email,
+      authorEmail: resolvedEmail,
       authorNote: body.author_note,
       payload: body.payload,
       logger: request.log

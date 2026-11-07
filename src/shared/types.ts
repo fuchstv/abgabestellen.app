@@ -140,6 +140,8 @@ export interface UserRegionRole {
   region_id: number;
   role: UserRoleType;
   created_at: string;
+  region_name?: string;
+  region_type?: number;
 }
 
 export interface AuthUser {
@@ -147,4 +149,39 @@ export interface AuthUser {
   email: string;
   name?: string;
   isSuperAdmin?: boolean;
+}
+
+export interface TeamMember {
+  id: string;
+  email: string;
+  name: string;
+  is_super_admin: boolean;
+  is_active: boolean;
+  revoked_at: string | null;
+  created_at: string;
+  last_login_at: string | null;
+  has_user_record: boolean;
+  roles: Array<{
+    region_id: number;
+    region_name: string;
+    region_type: number;
+    role: UserRoleType;
+    created_at: string;
+  }>;
+}
+
+export interface TeamInviteItem {
+  id: number;
+  region_id: number;
+  region_name: string;
+  target_role: UserRoleType;
+  created_by_user_id: string;
+  created_by_email?: string | null;
+  redeemed_by_user_id: string | null;
+  redeemed_by_email?: string | null;
+  expires_at: string;
+  redeemed_at: string | null;
+  revoked_at: string | null;
+  created_at: string;
+  status: 'OPEN' | 'REDEEMED' | 'EXPIRED' | 'REVOKED';
 }

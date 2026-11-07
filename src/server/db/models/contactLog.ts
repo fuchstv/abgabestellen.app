@@ -1,6 +1,19 @@
 import { Database } from 'better-sqlite3';
 import { ContactLogEntry, GivingStatus } from '@shared/types';
 
+function parseContactTimestampMs(raw: string | null | undefined): number | null {
+  if (!raw) return null;
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  const normalized = trimmed.includes('T')
+    ? trimmed
+    : `${trimmed.replace(' ', 'T')}${trimmed.endsWith('Z') ? '' : 'Z'}`;
+  const ms = Date.parse(normalized);
+  if (!Number.isNaN(ms)) return ms;
+  const fallback = Date.parse(trimmed);
+  return Number.isNaN(fallback) ? null : fallback;
+}
+
 export class ContactLogModel {
   constructor(private db: Database) {}
 
@@ -71,13 +84,17 @@ export class ContactLogModel {
     const stmt = this.db.prepare(`
       SELECT * FROM fs_store_contact_log 
       WHERE store_id = ? 
-      ORDER BY contacted_at DESC, id DESC
+      ORDER BY datetime(contacted_at) DESC, id DESC
     `);
     return stmt.all(storeId) as ContactLogEntry[];
   }
 
-  // Maintenance query: returns stores ordered by oldest or missing last_contact_at
-  getOverdueStores(regionIds?: number[], limit: number = 50): any[] {
+  // Maintenance query: returns stores ordered by multi-tier verification need ("Nach Bedarf")
+  getOverdueStores(regionIds?: number[], limit: number = 1000): any[] {
+    if (regionIds && regionIds.length === 0) {
+      return [];
+    }
+
     let sql = `
       SELECT 
         b.id, b.name, b.str, b.plz, b.stadt, b.bezirk_id,
@@ -86,13 +103,21 @@ export class ContactLogModel {
         gd.registration_required,
         gd.last_contact_at,
         gd.public_phone,
+        gd.public_contact_name,
+        gd.dropoff_times,
+        gd.accepted_items,
         b.ansprechpartner,
         b.telefon,
         (
-          SELECT json_object('author_name', cl.author_name, 'note', cl.note, 'contacted_at', cl.contacted_at)
+          SELECT COUNT(*)
+          FROM fs_store_giving_suggestion s
+          WHERE s.store_id = b.id AND s.status = 0
+        ) as pending_suggestions_count,
+        (
+          SELECT json_object('author_name', cl.author_name, 'note', cl.note, 'contacted_at', cl.contacted_at, 'channel', cl.channel)
           FROM fs_store_contact_log cl
           WHERE cl.store_id = b.id
-          ORDER BY cl.contacted_at DESC LIMIT 1
+          ORDER BY datetime(cl.contacted_at) DESC, cl.id DESC LIMIT 1
         ) as latest_contact
       FROM fs_betrieb b
       JOIN fs_store_giving_details gd ON gd.store_id = b.id
@@ -107,16 +132,88 @@ export class ContactLogModel {
       params.push(...regionIds);
     }
 
-    sql += `
-      ORDER BY (gd.last_contact_at IS NULL) DESC, gd.last_contact_at ASC, b.id ASC
-      LIMIT ?
-    `;
-    params.push(limit);
-
     const rows = this.db.prepare(sql).all(...params) as any[];
-    return rows.map(r => ({
-      ...r,
-      latest_contact: r.latest_contact ? JSON.parse(r.latest_contact) : null
-    }));
+    const nowMs = Date.now();
+
+    const enriched = rows.map(r => {
+      const contactMs = parseContactTimestampMs(r.last_contact_at);
+      const daysSinceContact =
+        contactMs === null ? null : Math.max(0, Math.floor((nowMs - contactMs) / (1000 * 60 * 60 * 24)));
+      const isPaused = Number(r.giving_status) === GivingStatus.PAUSED || /\binaktiv\b/i.test(r.name || '');
+      const pendingCount = Number(r.pending_suggestions_count || 0);
+      const inReview = Number(r.giving_status) === GivingStatus.IN_REVIEW;
+
+      let needTier = 4;
+      let trafficLight: 'urgent' | 'red' | 'yellow' | 'green' | 'paused' = 'green';
+      let needReason = 'Aktuell verifiziert';
+
+      if (isPaused) {
+        needTier = 5;
+        trafficLight = 'paused';
+        needReason = 'Pausiert / Inaktiv';
+      } else if (pendingCount > 0 || inReview) {
+        needTier = 1;
+        trafficLight = 'urgent';
+        needReason =
+          pendingCount > 0
+            ? `${pendingCount} offene${pendingCount === 1 ? 'r Vorschlag' : ' Vorschläge'}`
+            : 'In Aktualisierung';
+      } else if (daysSinceContact === null || daysSinceContact >= 180) {
+        needTier = 2;
+        trafficLight = 'red';
+        needReason = daysSinceContact === null ? 'Nie verifiziert' : `Überfällig (${daysSinceContact} Tage)`;
+      } else if (daysSinceContact >= 90) {
+        needTier = 3;
+        trafficLight = 'yellow';
+        needReason = `Bald fällig (${daysSinceContact} Tage)`;
+      } else {
+        needTier = 4;
+        trafficLight = 'green';
+        needReason = daysSinceContact === 0 ? 'Heute verifiziert' : `Vor ${daysSinceContact} Tagen`;
+      }
+
+      const missingCoreInfo = (!r.dropoff_times || !String(r.dropoff_times).trim()) ? 1 : 0;
+
+      return {
+        ...r,
+        pending_suggestions_count: pendingCount,
+        days_since_contact: daysSinceContact,
+        is_paused: isPaused,
+        need_tier: needTier,
+        traffic_light: trafficLight,
+        need_reason: needReason,
+        _sort_contact_ms: contactMs,
+        _missing_core_info: missingCoreInfo,
+        latest_contact: r.latest_contact ? JSON.parse(r.latest_contact) : null
+      };
+    });
+
+    enriched.sort((a, b) => {
+      if (a.need_tier !== b.need_tier) return a.need_tier - b.need_tier;
+
+      // Within tier 1, prioritize higher open suggestion count first
+      if (a.need_tier === 1 && a.pending_suggestions_count !== b.pending_suggestions_count) {
+        return b.pending_suggestions_count - a.pending_suggestions_count;
+      }
+
+      // Never-verified (null) comes before dated entries
+      const aNull = a._sort_contact_ms === null ? 0 : 1;
+      const bNull = b._sort_contact_ms === null ? 0 : 1;
+      if (aNull !== bNull) return aNull - bNull;
+
+      // Oldest contact timestamp comes first
+      if (a._sort_contact_ms !== null && b._sort_contact_ms !== null && a._sort_contact_ms !== b._sort_contact_ms) {
+        return a._sort_contact_ms - b._sort_contact_ms;
+      }
+
+      // Stores missing dropoff times bubble slightly ahead
+      if (a._missing_core_info !== b._missing_core_info) {
+        return b._missing_core_info - a._missing_core_info;
+      }
+
+      return a.id - b.id;
+    });
+
+    return enriched.slice(0, limit).map(({ _sort_contact_ms, _missing_core_info, ...clean }) => clean);
   }
 }

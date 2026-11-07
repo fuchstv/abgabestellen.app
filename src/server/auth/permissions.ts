@@ -107,6 +107,42 @@ export class PermissionService {
     }
   }
 
+  isGlobalAdmin(user: AuthUser | undefined): boolean {
+    if (!user) return false;
+    return this.userRoleModel.isGlobalOrga(user.uid, Boolean(user.isSuperAdmin));
+  }
+
+  enforceTeamAdmin(user: AuthUser | undefined): { isGlobalAdmin: boolean; adminRegionIds: number[] } {
+    if (!user) {
+      const err: any = new Error('Authentifizierung erforderlich');
+      err.statusCode = 401;
+      throw err;
+    }
+
+    const isGlobal = this.isGlobalAdmin(user);
+    const adminRegionIds = this.userRoleModel.getTeamAdminRegionIds(user.uid, Boolean(user.isSuperAdmin));
+
+    if (!isGlobal && adminRegionIds.length === 0) {
+      const err: any = new Error(
+        'Zugriff verweigert: Mitbearbeiter-Verwaltung erfordert ORGA- oder Botschafter-Berechtigung (AMBASSADOR)'
+      );
+      err.statusCode = 403;
+      throw err;
+    }
+
+    return { isGlobalAdmin: isGlobal, adminRegionIds };
+  }
+
+  enforceRegionTeamAdmin(user: AuthUser | undefined, regionId: number): { isGlobalAdmin: boolean } {
+    const { isGlobalAdmin, adminRegionIds } = this.enforceTeamAdmin(user);
+    if (!isGlobalAdmin && !adminRegionIds.includes(regionId)) {
+      const err: any = new Error('Zugriff verweigert: Keine Team-Verwaltungsberechtigung für diese Region');
+      err.statusCode = 403;
+      throw err;
+    }
+    return { isGlobalAdmin };
+  }
+
   sanitizeStore(store: InternalStore, permissions: StorePermissions): PublicStore | InternalStore {
     if (permissions.canViewInternalContacts) {
       return store;

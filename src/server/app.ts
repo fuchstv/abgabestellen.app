@@ -16,10 +16,29 @@ import { inviteRoutes } from './routes/invites';
 import { feedRoutes } from './routes/feeds';
 import { authRoutes } from './routes/auth';
 import { webhookRoutes } from './routes/webhooks';
+import { teamRoutes } from './routes/team';
+import { ensureMigrations } from './db/index';
+import { scheduleGcsSync } from './db/gcsSync';
 
 export function buildApp(db: Database, options: { logger?: boolean } = {}): FastifyInstance {
+  ensureMigrations(db);
+
   const app = fastify({
     logger: options.logger ?? false
+  });
+
+  app.decorate('db', db);
+
+  // Automatic write-through snapshot sync to Cloud Storage after successful DB mutations
+  app.addHook('onResponse', async (request, reply) => {
+    const method = request.method.toUpperCase();
+    if (
+      (method === 'POST' || method === 'PUT' || method === 'PATCH' || method === 'DELETE') &&
+      request.url.startsWith('/api/') &&
+      reply.statusCode < 400
+    ) {
+      scheduleGcsSync(db);
+    }
   });
 
   // CORS
@@ -74,6 +93,7 @@ export function buildApp(db: Database, options: { logger?: boolean } = {}): Fast
   app.register(suggestionRoutes, { db });
   app.register(maintenanceRoutes, { db });
   app.register(inviteRoutes, { db });
+  app.register(teamRoutes, { db });
   app.register(feedRoutes, { db });
   app.register(webhookRoutes, { db });
 

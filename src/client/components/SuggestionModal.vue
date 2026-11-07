@@ -236,36 +236,35 @@ watch(
 );
 
 async function submitSuggestion() {
-  const customHeaders: Record<string, string> = {};
+  let cleanEmail = '';
   if (!authState.token) {
-    const cleanEmail = submitterEmail.value.trim();
+    cleanEmail = submitterEmail.value.trim();
     if (!cleanEmail) {
       notifyError('Bitte gib deine E-Mail-Adresse für eventuelle Rückfragen an.');
       return;
     }
-    customHeaders['Authorization'] = `Bearer test:anonymous_${Date.now()}:${cleanEmail}:false`;
   }
 
   submitting.value = true;
   try {
+    const bodyObj: Record<string, any> = {
+      payload: form,
+      author_note: authorNote.value
+    };
+    if (cleanEmail) {
+      bodyObj.author_email = cleanEmail;
+    }
+
     let res: any;
     if (props.isNewStore) {
       res = await fetchApi(`/api/regions/${props.regionId}/suggestions`, {
         method: 'POST',
-        headers: customHeaders,
-        body: JSON.stringify({
-          payload: form,
-          author_note: authorNote.value
-        })
+        body: JSON.stringify(bodyObj)
       });
     } else {
       res = await fetchApi(`/api/giving-stores/${props.targetStore!.id}/suggestions`, {
         method: 'POST',
-        headers: customHeaders,
-        body: JSON.stringify({
-          payload: form,
-          author_note: authorNote.value
-        })
+        body: JSON.stringify(bodyObj)
       });
     }
 

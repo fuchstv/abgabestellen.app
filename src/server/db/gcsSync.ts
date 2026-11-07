@@ -1,10 +1,15 @@
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
+import { Database } from 'better-sqlite3';
 import { Storage } from '@google-cloud/storage';
 
-const bucketName = process.env.GCS_BUCKET_NAME;
+function getBucketName(): string | undefined {
+  return process.env.GCS_BUCKET_NAME;
+}
 
 export async function syncFromGCS(targetLocalDbPath: string): Promise<boolean> {
+  const bucketName = getBucketName();
   if (!bucketName) {
     return false;
   }
@@ -26,7 +31,6 @@ export async function syncFromGCS(targetLocalDbPath: string): Promise<boolean> {
       return false;
     }
 
-    // Ensure directory exists
     const dir = path.dirname(targetLocalDbPath);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
@@ -43,13 +47,13 @@ export async function syncFromGCS(targetLocalDbPath: string): Promise<boolean> {
 }
 
 export async function syncToGCS(localDbPath: string): Promise<boolean> {
+  const bucketName = getBucketName();
   if (!bucketName || !fs.existsSync(localDbPath)) {
     return false;
   }
 
   const storage = new Storage();
   const bucket = storage.bucket(bucketName);
-  const file = bucket.file('abgabestellen.db');
 
   try {
     console.log(`☁️ Sichere SQLite-Datenbank nach gs://${bucketName}/abgabestellen.db...`);
@@ -65,4 +69,73 @@ export async function syncToGCS(localDbPath: string): Promise<boolean> {
     console.error(`❌ Fehler beim Sichern der Datenbank nach GCS:`, err.message);
     return false;
   }
+}
+
+// Single-flight + debounced live WAL-folded backup via better-sqlite3 db.backup()
+let syncTimer: NodeJS.Timeout | null = null;
+let syncInFlight: Promise<boolean> | null = null;
+let syncPendingAgain = false;
+
+export async function syncDatabaseSnapshotToGCS(db: Database): Promise<boolean> {
+  const bucketName = getBucketName();
+  if (!bucketName || !db || !db.open || (db as any).memory) {
+    return false;
+  }
+
+  if (syncInFlight) {
+    syncPendingAgain = true;
+    return syncInFlight;
+  }
+
+  syncInFlight = (async () => {
+    const tmpPath = path.join(
+      os.tmpdir(),
+      `abgabestellen-snapshot-${process.pid}-${Date.now()}.db`
+    );
+    try {
+      await db.backup(tmpPath);
+      const ok = await syncToGCS(tmpPath);
+      return ok;
+    } catch (err: any) {
+      console.error(`❌ Fehler beim Erstellen des SQLite-Snapshots für GCS:`, err.message);
+      return false;
+    } finally {
+      try {
+        if (fs.existsSync(tmpPath)) {
+          fs.unlinkSync(tmpPath);
+        }
+      } catch {
+        // ignore temp cleanup errors
+      }
+      syncInFlight = null;
+      if (syncPendingAgain) {
+        syncPendingAgain = false;
+        void syncDatabaseSnapshotToGCS(db);
+      }
+    }
+  })();
+
+  return syncInFlight;
+}
+
+export function scheduleGcsSync(db: Database, delayMs = 350): void {
+  const bucketName = getBucketName();
+  if (!bucketName || !db || !db.open || (db as any).memory) {
+    return;
+  }
+  if (syncTimer) {
+    clearTimeout(syncTimer);
+  }
+  syncTimer = setTimeout(() => {
+    syncTimer = null;
+    void syncDatabaseSnapshotToGCS(db);
+  }, delayMs);
+}
+
+export async function flushGcsSync(db: Database): Promise<boolean> {
+  if (syncTimer) {
+    clearTimeout(syncTimer);
+    syncTimer = null;
+  }
+  return syncDatabaseSnapshotToGCS(db);
 }

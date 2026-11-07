@@ -167,7 +167,17 @@
                 class="w-full flex items-center gap-2 px-2.5 py-2 hover:bg-fs-secondary-200 hover:text-fs-secondary-900 rounded-fs text-fs-text font-medium transition-colors"
               >
                 <Inbox class="w-3.5 h-3.5 text-fs-secondary-600" />
-                <span>Pflege-Dashboard & Inbox</span>
+                <span>Pflege-Dashboard & Ampel</span>
+              </router-link>
+
+              <router-link
+                v-if="authState.canManageTeam || authState.user.isSuperAdmin"
+                to="/maintenance?tab=team"
+                @click="showUserMenu = false"
+                class="w-full flex items-center gap-2 px-2.5 py-2 hover:bg-fs-secondary-200 hover:text-fs-secondary-900 rounded-fs text-fs-text font-medium transition-colors"
+              >
+                <Users class="w-3.5 h-3.5 text-fs-primary-600" />
+                <span>Mitbearbeiter & Zugänge</span>
               </router-link>
 
               <button
@@ -207,6 +217,7 @@ import {
   Moon,
   LogIn,
   ShieldCheck,
+  Users,
   LogOut
 } from 'lucide-vue-next';
 import { appState, authState, setAuthUser, themeState, toggleTheme } from '../state';

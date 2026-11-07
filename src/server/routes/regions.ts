@@ -171,7 +171,7 @@ export async function regionRoutes(fastify: FastifyInstance, options: { db: Data
     const isAuthorizedBySecret = configuredSecret && orgaSecretHeader === configuredSecret;
     const isAuthorizedByUser = request.user && (
       request.user.isSuperAdmin || 
-      userRoleModel.hasPermissionInRegion(request.user.uid, 1, [UserRoleType.ORGA], true)
+      userRoleModel.hasPermissionInRegion(request.user.uid, 1, [UserRoleType.ORGA], Boolean(request.user.isSuperAdmin))
     );
 
     if (!isAuthorizedBySecret && !isAuthorizedByUser) {

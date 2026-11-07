@@ -48,6 +48,13 @@ export async function inviteRoutes(fastify: FastifyInstance, options: { db: Data
       });
     }
 
+    if (tokenRecord.revoked_at) {
+      return reply.status(410).send({
+        valid: false,
+        error: 'Dieser Einladungslink wurde widerrufen und ist nicht mehr gültig.'
+      });
+    }
+
     if (tokenRecord.redeemed_by_user_id) {
       return reply.status(410).send({
         valid: false,
@@ -86,13 +93,23 @@ export async function inviteRoutes(fastify: FastifyInstance, options: { db: Data
       return reply.status(400).send({ error: 'region_id ist erforderlich' });
     }
 
-    // Enforce coordinator permissions on region
-    permissionService.enforceRegionManager(request.user, body.region_id);
+    // Enforce team/invite administration permissions on region (ORGA, AMBASSADOR, or Landesbezirk lead)
+    const { isGlobalAdmin } = permissionService.enforceRegionTeamAdmin(request.user, body.region_id);
+
+    const requestedRole = body.target_role || UserRoleType.WORKGROUP_GIVING_STORES;
+    if (
+      !isGlobalAdmin &&
+      (requestedRole === UserRoleType.ORGA || requestedRole === UserRoleType.AMBASSADOR)
+    ) {
+      return reply.status(403).send({
+        error: 'Nur ORGA / Super-Admins können Einladungen für Botschafter- oder ORGA-Rollen erstellen'
+      });
+    }
 
     const invite = userRoleModel.createInviteToken({
       region_id: body.region_id,
       created_by_user_id: request.user!.uid,
-      target_role: body.target_role || UserRoleType.WORKGROUP_GIVING_STORES,
+      target_role: requestedRole,
       expiresInDays: body.expiresInDays || 7
     });
 
